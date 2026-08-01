@@ -1,0 +1,11 @@
+{
+  "name": "silat-rt",
+  "version": "0.1.0",
+  "description": "Sistem Informasi Langgar dan RT — RT 01/RW 09 Purwantoro, Blimbing, Kota Malang",
+  "private": true,
+  "scripts": {
+    "dev": "npx serve . -l 5173",
+    "generate-env": "node scripts/generate-env.js"
+  },
+  "license": "UNLICENSED"
+}
