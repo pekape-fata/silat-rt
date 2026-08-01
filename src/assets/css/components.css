@@ -1,14 +1,243 @@
-/* src/assets/css/components.css */
+/* =========================================================
+   SILAT RT — src/assets/css/components.css
+   Komponen visual — implementasi docs/06a-design-system.md §A.5
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   TOP APP BAR
+   --------------------------------------------------------- */
+.app-topbar{
+  display:flex;
+  align-items:center;
+  gap:var(--space-3);
+  padding:var(--space-3) var(--space-4);
+  background:var(--color-surface-card);
+  border-bottom:1px solid var(--color-border);
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+.app-topbar__title{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:var(--fs-h2);
+  margin:0;
+  flex:1;
+}
+.app-topbar__badge-role{
+  font-size:var(--fs-caption);
+  font-weight:600;
+  padding:2px var(--space-2);
+  border-radius:var(--radius-pill);
+  background:var(--color-primary-container);
+  color:var(--color-primary);
+}
+
+/* ---------------------------------------------------------
+   BOTTOM NAVIGATION (mobile) — glassmorphism ringan, sesuai spesifikasi
+   --------------------------------------------------------- */
+.app-bottomnav{
+  position:fixed;
+  left:0; right:0; bottom:0;
+  display:flex;
+  justify-content:space-around;
+  padding:var(--space-2) var(--space-2) max(var(--space-2), env(safe-area-inset-bottom));
+  background:rgba(255,255,255,0.7);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-top:1px solid var(--color-border);
+  z-index:30;
+}
+[data-theme="dark"] .app-bottomnav{ background:rgba(15,26,23,0.7); }
+.app-bottomnav__item{
+  display:flex; flex-direction:column; align-items:center; gap:2px;
+  font-size:11px; color:var(--color-text-muted);
+  min-width:44px; min-height:44px; justify-content:center;
+}
+.app-bottomnav__item.active{ color:var(--color-primary); font-weight:600; }
+
+/* ---------------------------------------------------------
+   KARTU
+   --------------------------------------------------------- */
 .card{
   background:var(--color-surface-card);
   border:1px solid var(--color-border);
   border-radius:var(--radius-card);
+  box-shadow:var(--shadow-sm);
+  transition:box-shadow var(--transition-base), transform var(--transition-base);
 }
+.card.card-hover:hover{
+  box-shadow:var(--shadow-md);
+  transform:translateY(-1px);
+}
+.card-body{ padding:var(--space-4); }
+.card-header{
+  padding:var(--space-3) var(--space-4);
+  border-bottom:1px solid var(--color-border);
+  font-weight:700;
+  font-family:var(--font-display);
+  font-size:var(--fs-h2);
+}
+
+/* Kartu statistik dashboard */
+.stat-card .stat-value{
+  font-family:var(--font-display);
+  font-size:var(--fs-display);
+  font-weight:700;
+  line-height:1.1;
+}
+.stat-card .stat-label{
+  font-size:var(--fs-caption);
+  color:var(--color-text-muted);
+  text-transform:uppercase;
+  letter-spacing:0.03em;
+}
+
+/* ---------------------------------------------------------
+   TOMBOL — kompak, tegas, radius konsisten
+   --------------------------------------------------------- */
+.btn{
+  font-weight:600;
+  font-size:var(--fs-body);
+  padding:0.5rem 1rem;
+  border-radius:var(--radius-btn);
+  transition:filter var(--transition-base), transform var(--transition-base);
+}
+.btn:active{ transform:scale(0.98); }
+.btn-sm{ padding:0.35rem 0.75rem; font-size:var(--fs-caption); min-height:36px; }
+
 .btn-primary{
   background-color:var(--color-primary) !important;
   border-color:var(--color-primary) !important;
+  color:#fff !important;
+}
+.btn-primary:hover{ filter:brightness(1.08); }
+
+.btn-secondary-accent{
+  background-color:var(--color-secondary) !important;
+  border-color:var(--color-secondary) !important;
+  color:#3A2C0E !important;
+}
+
+.btn-outline-secondary{
+  color:var(--color-text-primary);
+  border-color:var(--color-border);
+}
+.btn-outline-secondary:hover{
+  background:var(--color-surface);
+  border-color:var(--color-text-muted);
+  color:var(--color-text-primary);
+}
+
+/* ---------------------------------------------------------
+   FORM
+   --------------------------------------------------------- */
+.form-label{
+  font-size:var(--fs-caption);
+  font-weight:600;
+  color:var(--color-text-primary);
+  margin-bottom:var(--space-1);
 }
 .form-control, .form-select{
   border-radius:var(--radius-btn);
   border-color:var(--color-border);
+  padding:0.55rem 0.85rem;
+  font-size:var(--fs-body);
+  background:var(--color-surface-card);
+  color:var(--color-text-primary);
+}
+.form-control:focus, .form-select:focus{
+  border-color:var(--color-primary);
+  box-shadow:0 0 0 3px var(--color-primary-container);
+}
+.form-text{ font-size:var(--fs-caption); color:var(--color-text-muted); }
+
+/* ---------------------------------------------------------
+   BADGE STATUS SURAT — dipetakan ke 9 nilai enum status (revisi 05e/006)
+   Pakai: <span class="status-badge" data-status="menunggu_verifikasi">Menunggu Verifikasi</span>
+   --------------------------------------------------------- */
+.status-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:var(--fs-caption);
+  font-weight:600;
+  padding:4px var(--space-3);
+  border-radius:var(--radius-pill);
+  white-space:nowrap;
+}
+.status-badge::before{
+  content:"";
+  width:6px; height:6px;
+  border-radius:50%;
+  background:currentColor;
+}
+.status-badge[data-status="draf_publik"]{ background:var(--color-info-container); color:var(--color-info); }
+.status-badge[data-status="menunggu_verifikasi"]{ background:var(--color-secondary-container); color:#8A5A15; }
+.status-badge[data-status="perlu_perbaikan"]{ background:var(--color-danger-container); color:var(--color-danger); }
+.status-badge[data-status="terverifikasi_sekretaris_rt"]{ background:var(--color-info-container); color:var(--color-info); }
+.status-badge[data-status="ditandatangani_rt"]{ background:var(--color-primary-container); color:var(--color-primary); }
+.status-badge[data-status="diteruskan_rw"]{ background:var(--color-secondary-container); color:#8A5A15; }
+.status-badge[data-status="ditandatangani_rw"]{ background:var(--color-primary-container); color:var(--color-primary); }
+.status-badge[data-status="terbit"]{ background:var(--color-success-container); color:var(--color-success); }
+.status-badge[data-status="ditolak"]{ background:var(--color-danger-container); color:var(--color-danger); }
+
+/* ---------------------------------------------------------
+   RING STATUS — elemen tanda tangan visual aplikasi (§A.1)
+   SVG arc dua warna, dipakai via komponen JS yang menyuntik --pct
+   Pakai: <div class="ring-status" style="--pct:45"><svg>...</svg></div>
+   --------------------------------------------------------- */
+.ring-status{
+  --pct:0;
+  position:relative;
+  display:inline-grid;
+  place-items:center;
+}
+.ring-status circle.ring-track{ stroke:var(--color-border); }
+.ring-status circle.ring-progress{
+  stroke:var(--color-primary);
+  stroke-linecap:round;
+  transition:stroke-dashoffset 400ms ease;
+}
+
+/* ---------------------------------------------------------
+   MODAL — selaraskan dengan radius & tipografi
+   --------------------------------------------------------- */
+.modal-content{
+  border-radius:var(--radius-card);
+  border-color:var(--color-border);
+}
+.modal-header{ border-bottom-color:var(--color-border); padding:var(--space-4); }
+.modal-body{ padding:var(--space-4); }
+.modal-footer{ border-top-color:var(--color-border); padding:var(--space-3) var(--space-4); }
+.modal-title{ font-family:var(--font-display); font-weight:700; font-size:var(--fs-h2); }
+
+/* ---------------------------------------------------------
+   ALERT — kompak
+   --------------------------------------------------------- */
+.alert{ border-radius:var(--radius-btn); font-size:var(--fs-caption); padding:var(--space-3); }
+
+/* ---------------------------------------------------------
+   EMPTY STATE
+   --------------------------------------------------------- */
+.empty-state{
+  text-align:center;
+  padding:var(--space-6) var(--space-4);
+  color:var(--color-text-muted);
+}
+.empty-state__title{ font-weight:600; color:var(--color-text-primary); margin-bottom:var(--space-1); }
+.empty-state .btn{ margin-top:var(--space-3); }
+
+/* ---------------------------------------------------------
+   SKELETON LOADING
+   --------------------------------------------------------- */
+.skeleton{
+  background:linear-gradient(90deg, var(--color-border) 25%, var(--color-surface) 50%, var(--color-border) 75%);
+  background-size:200% 100%;
+  animation:skeleton-pulse 1.4s ease-in-out infinite;
+  border-radius:var(--radius-sm);
+}
+@keyframes skeleton-pulse{
+  0%{ background-position:200% 0; }
+  100%{ background-position:-200% 0; }
 }
