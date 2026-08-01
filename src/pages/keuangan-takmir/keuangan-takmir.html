@@ -1,0 +1,74 @@
+<!-- src/pages/keuangan-takmir/keuangan-takmir.html -->
+<div class="container-compact py-3" style="max-width:640px;">
+  <h1 class="fs-5 fw-bold mb-3" style="font-family:var(--font-display);">Kas Takmir</h1>
+  <div class="text-caption mb-3" id="kt-langgar-nama"></div>
+
+  <div class="finance-hero" style="background:var(--color-secondary);">
+    <div class="label">Saldo Kas Takmir saat ini</div>
+    <div class="amount mono" id="kt-saldo">Rp0</div>
+    <div class="breakdown">
+      <div>▲ Masuk <span class="mono" id="kt-masuk">Rp0</span></div>
+      <div>▼ Keluar <span class="mono" id="kt-keluar">Rp0</span></div>
+    </div>
+  </div>
+
+  <div class="tab-row" id="kt-tabs">
+    <div class="tab-item active" data-tab="ringkasan">Ringkasan</div>
+    <div class="tab-item" data-tab="riwayat">Riwayat Transaksi</div>
+  </div>
+
+  <div class="kt-panel" data-panel="ringkasan">
+    <div class="card card-body mb-3">
+      <h2 class="section-title mb-2">Grafik Bulanan <span class="text-caption" id="kt-tahun"></span></h2>
+      <div id="kt-chart"><div class="skeleton" style="height:90px;"></div></div>
+    </div>
+    <div class="card card-body mb-3">
+      <h2 class="section-title mb-2">Pengeluaran per Kategori (bulan ini)</h2>
+      <div id="kt-komposisi"><div class="skeleton" style="height:60px;"></div></div>
+    </div>
+  </div>
+
+  <div class="kt-panel" data-panel="riwayat" style="display:none;">
+    <div class="chip-row d-flex gap-2 mb-3" id="kt-filter-kategori" style="overflow-x:auto;"></div>
+    <div id="kt-riwayat-list"><div class="skeleton" style="height:120px;"></div></div>
+  </div>
+</div>
+
+<button class="fab" id="kt-fab" title="Catat Transaksi" style="display:none;">+</button>
+
+<div class="modal fade" id="modalCatatTransaksiTakmir" tabindex="-1">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content" style="border-radius:var(--radius-card);">
+      <div class="modal-header">
+        <h5 class="modal-title fs-6 fw-bold">Catat Transaksi Kas Takmir</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">Tipe</label>
+        <select id="kt_tipe" class="form-select mb-3">
+          <option value="pemasukan">Pemasukan</option>
+          <option value="pengeluaran">Pengeluaran</option>
+        </select>
+
+        <label class="form-label">Kategori</label>
+        <select id="kt_kategori" class="form-select mb-3"></select>
+
+        <label class="form-label">Nominal (Rp)</label>
+        <input id="kt_nominal" type="number" min="0" class="form-control mb-3" placeholder="Contoh: 250000">
+
+        <label class="form-label">Tanggal</label>
+        <input id="kt_tanggal" type="date" class="form-control mb-3">
+
+        <label class="form-label">Keterangan</label>
+        <textarea id="kt_keterangan" class="form-control mb-3" rows="2" placeholder="Contoh: Donasi jumat berkah"></textarea>
+
+        <label class="form-label">Bukti/Nota (opsional)</label>
+        <input id="kt_bukti" type="file" accept="image/*,.pdf" class="form-control mb-2">
+        <div class="form-text" id="kt_bukti_status"></div>
+      </div>
+      <div class="modal-footer">
+        <button id="kt-btn-simpan" class="btn btn-primary w-100">Simpan Transaksi</button>
+      </div>
+    </div>
+  </div>
+</div>

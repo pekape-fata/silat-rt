@@ -29,6 +29,36 @@ export const SURAT_WORKFLOW_ROLE = {
   diteruskan_rw: ['Ketua RW', 'Administrator'],
 };
 
+/**
+ * Metadata tampilan bottom-nav per key: ikon, label, dan rute (hash) jika
+ * halamannya sudah dibangun. Key tanpa `route` berarti modulnya belum
+ * dibangun pada tahap ini — tombol tetap tampil (agar peta navigasi sesuai
+ * desain) tapi mengklik-nya hanya menampilkan info "segera hadir", bukan
+ * redirect diam-diam ke halaman lain.
+ */
+export const NAV_ITEM_META = {
+  'beranda':        { icon: '🏠', label: 'Beranda', route: '/dashboard' },
+  'warga':          { icon: '👥', label: 'Warga' },
+  'surat':          { icon: '📄', label: 'Surat' },
+  'keuangan-rt':    { icon: '💰', label: 'Keuangan', route: '/keuangan-rt' },
+  'laporan-rt':     { icon: '📊', label: 'Laporan RT', route: '/keuangan-rt' },
+  'kas-takmir':     { icon: '💰', label: 'Kas Takmir', route: '/keuangan-takmir' },
+  'laporan-takmir': { icon: '📊', label: 'Laporan', route: '/keuangan-takmir' },
+  'langgar':        { icon: '🕌', label: 'Langgar' },
+  'jadwal':         { icon: '🕒', label: 'Jadwal' },
+  'undangan':       { icon: '✉️', label: 'Undangan' },
+  'tugas':          { icon: '✅', label: 'Tugas' },
+  'profil':         { icon: '👤', label: 'Profil' },
+  'surat-saya':     { icon: '📄', label: 'Surat Saya' },
+  'agenda':         { icon: '📅', label: 'Agenda' },
+  'pengumuman':     { icon: '📣', label: 'Info' },
+  'pengguna':       { icon: '👥', label: 'Pengguna' },
+  'data':           { icon: '🗂️', label: 'Data' },
+  'sistem':         { icon: '⚙️', label: 'Sistem' },
+  'surat-rw':       { icon: '📄', label: 'Surat RW' },
+  'lainnya':        { icon: '⋯', label: 'Lainnya' },
+};
+
 export function getNavForRole(role) {
   return NAV_BY_ROLE[role] || ['beranda'];
 }

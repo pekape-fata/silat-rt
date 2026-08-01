@@ -1,0 +1,55 @@
+<!-- src/pages/dashboard/dashboard-pengurus.html -->
+<!-- Dashboard pengurus (RT/Takmir/Admin) — konten menyesuaikan role via JS -->
+<div class="container-compact py-3" style="max-width:640px;">
+
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+      <h1 class="fs-5 fw-bold mb-0" id="dash-greeting" style="font-family:var(--font-display);">Selamat datang</h1>
+      <div class="text-caption" id="dash-subtitle">Memuat data...</div>
+    </div>
+  </div>
+
+  <!-- Kartu statistik keuangan (klik untuk masuk ke modul terkait) -->
+  <div class="row g-3 mb-1" id="dash-stat-grid"><!-- diisi JS --></div>
+
+  <!-- Tren pemasukan vs pengeluaran 6 bulan terakhir -->
+  <div class="card card-body mb-3" id="dash-chart-card" style="display:none;">
+    <h2 class="section-title d-flex justify-content-between align-items-center mb-2">
+      <span>Tren Keuangan 6 Bulan</span>
+      <span class="text-caption" id="dash-chart-toggle-label" style="cursor:pointer; font-weight:600; color:var(--color-primary);">Kas RT ⇄</span>
+    </h2>
+    <div id="dash-chart-wrap"><div class="skeleton" style="height:90px;"></div></div>
+    <div class="d-flex gap-3 mt-2" style="font-size:11px;">
+      <span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--color-success);margin-right:4px;"></span>Pemasukan</span>
+      <span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--color-danger);margin-right:4px;"></span>Pengeluaran</span>
+    </div>
+  </div>
+
+  <!-- Aksi cepat khusus bendahara -->
+  <div class="quick-action-grid" id="dash-quick-actions" style="display:none;"></div>
+
+  <!-- Iuran bulan ini (khusus Bendahara/Ketua/Sekretaris RT) -->
+  <div class="card card-body mb-3" id="dash-iuran-card" style="display:none;">
+    <h2 class="section-title mb-2">Iuran Warga Bulan Ini</h2>
+    <div id="dash-iuran-body"><div class="skeleton" style="height:56px;"></div></div>
+  </div>
+
+  <!-- Transaksi terbaru gabungan -->
+  <div class="card card-body mb-3" id="dash-transaksi-card" style="display:none;">
+    <h2 class="section-title mb-2">Transaksi Terbaru</h2>
+    <div id="dash-transaksi-list"><div class="skeleton" style="height:80px;"></div></div>
+  </div>
+
+  <!-- Agenda -->
+  <div class="card card-body mb-3" id="dash-agenda-card" style="display:none;">
+    <h2 class="section-title mb-2">Agenda Mendatang</h2>
+    <div id="dash-agenda-list"></div>
+  </div>
+
+  <!-- Pengumuman -->
+  <div class="card card-body mb-3" id="dash-pengumuman-card" style="display:none;">
+    <h2 class="section-title mb-2">Pengumuman Terbaru</h2>
+    <div id="dash-pengumuman-list"></div>
+  </div>
+
+</div>

@@ -192,6 +192,36 @@
   }
   @media (max-width:456px){ .fab{right:18px;} }
 
+  /* Tab row (Ringkasan / Iuran / Arisan / Riwayat) */
+  .tab-row{display:flex; gap:8px; overflow-x:auto; padding-bottom:2px; margin-bottom:14px; scrollbar-width:none;}
+  .tab-row::-webkit-scrollbar{display:none;}
+  .tab-item{flex:0 0 auto; padding:8px 14px; border-radius:var(--radius-pill); font-size:12px; font-weight:600;
+    background:var(--color-surface-card); border:1px solid var(--color-border); color:var(--color-text-muted); cursor:pointer; white-space:nowrap;}
+  .tab-item.active{background:var(--color-primary); border-color:var(--color-primary); color:#fff;}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  /* Hero saldo */
+  .finance-hero{border-radius:var(--radius-card); padding:16px; margin-bottom:14px; color:#fff;}
+  .finance-hero .fh-label{font-size:12px; opacity:.85;}
+  .finance-hero .fh-amount{font-family:var(--font-display); font-size:28px; font-weight:700; margin:2px 0 10px;}
+  .finance-hero .fh-breakdown{display:flex; gap:16px; font-size:12px;}
+
+  /* Quick action grid (dashboard bendahara) */
+  .quick-action-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;}
+  .quick-action{display:flex; flex-direction:column; gap:6px; padding:12px; border-radius:var(--radius-card);
+    border:1px solid var(--color-border); background:var(--color-surface-card); cursor:pointer;}
+  .quick-action .qa-icon{font-size:18px;}
+  .quick-action .qa-label{font-size:12px; font-weight:700;}
+
+  /* Progress bar (iuran bulan ini) */
+  .progress-track{height:8px; border-radius:999px; background:var(--color-border); overflow:hidden;}
+  .progress-fill{height:100%; background:var(--color-primary);}
+
+  /* Stat card yang bisa diklik */
+  .stat-card.clickable{cursor:pointer;}
+  .stat-card.clickable:active{transform:scale(0.98);}
+
   .public-header{
     text-align:center; padding:30px 10px 20px; background:var(--color-primary); color:#fff; border-radius:0 0 24px 24px; margin:-18px -18px 18px;
   }
@@ -221,6 +251,7 @@
     <div class="demo-chip" data-screen="warga">Data Warga</div>
     <div class="demo-chip" data-screen="surat">Ajukan Surat</div>
     <div class="demo-chip" data-screen="keuangan">Keuangan RT</div>
+    <div class="demo-chip" data-screen="kastakmir">Kas Takmir</div>
     <div class="demo-chip" data-screen="langgar">Profil Langgar</div>
     <div class="demo-chip" data-screen="verifikasi">Verifikasi QR (Publik)</div>
   </div>
@@ -250,10 +281,48 @@
     <h1 class="page-title">Selamat pagi, Pak Bambang 👋</h1>
 
     <div class="stat-grid">
+      <div class="stat-card clickable" onclick="showScreen('keuangan')"><div class="stat-value mono" style="color:var(--color-success)">Rp4.850rb</div><div class="stat-label">Saldo Kas RT ›</div></div>
+      <div class="stat-card clickable" onclick="showScreen('kastakmir')"><div class="stat-value mono" style="color:var(--color-primary)">Rp2.120rb</div><div class="stat-label">Saldo Kas Takmir ›</div></div>
       <div class="stat-card"><div class="stat-value">248</div><div class="stat-label">Warga aktif</div></div>
       <div class="stat-card"><div class="stat-value">64</div><div class="stat-label">Kartu Keluarga</div></div>
-      <div class="stat-card"><div class="stat-value mono" style="color:var(--color-success)">Rp4.850rb</div><div class="stat-label">Saldo Kas RT</div></div>
-      <div class="stat-card"><div class="stat-value mono" style="color:var(--color-primary)">Rp2.120rb</div><div class="stat-label">Saldo Kas Takmir</div></div>
+    </div>
+
+    <!-- Aksi cepat — muncul untuk peran Bendahara -->
+    <div class="quick-action-grid">
+      <div class="quick-action" onclick="showScreen('keuangan')"><span class="qa-icon">➕</span><span class="qa-label">Catat Iuran/Kas RT</span></div>
+      <div class="quick-action" onclick="showScreen('keuangan')"><span class="qa-icon">📊</span><span class="qa-label">Laporan Kas RT</span></div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">Tren Keuangan 6 Bulan <span class="muted" style="font-weight:400;">Kas RT</span></h2>
+      <svg width="100%" height="90" viewBox="0 0 320 90" preserveAspectRatio="xMidYMid meet">
+        <rect x="8"  y="45" width="12" height="35" rx="3" fill="var(--color-success)"/><rect x="22" y="60" width="12" height="20" rx="3" fill="var(--color-danger)"/>
+        <rect x="52" y="30" width="12" height="50" rx="3" fill="var(--color-success)"/><rect x="66" y="55" width="12" height="25" rx="3" fill="var(--color-danger)"/>
+        <rect x="96" y="15" width="12" height="65" rx="3" fill="var(--color-success)"/><rect x="110" y="50" width="12" height="30" rx="3" fill="var(--color-danger)"/>
+        <rect x="140" y="35" width="12" height="45" rx="3" fill="var(--color-success)"/><rect x="154" y="65" width="12" height="15" rx="3" fill="var(--color-danger)"/>
+        <rect x="184" y="20" width="12" height="60" rx="3" fill="var(--color-success)"/><rect x="198" y="58" width="12" height="22" rx="3" fill="var(--color-danger)"/>
+        <rect x="228" y="10" width="12" height="70" rx="3" fill="var(--color-success)"/><rect x="242" y="48" width="12" height="32" rx="3" fill="var(--color-danger)"/>
+        <text x="19" y="90" text-anchor="middle" font-size="9" fill="var(--color-text-muted)">Mar</text>
+        <text x="63" y="90" text-anchor="middle" font-size="9" fill="var(--color-text-muted)">Apr</text>
+        <text x="107" y="90" text-anchor="middle" font-size="9" fill="var(--color-text-muted)">Mei</text>
+        <text x="151" y="90" text-anchor="middle" font-size="9" fill="var(--color-text-muted)">Jun</text>
+        <text x="195" y="90" text-anchor="middle" font-size="9" fill="var(--color-text-muted)">Jul</text>
+        <text x="239" y="90" text-anchor="middle" font-size="9" fill="var(--color-text-muted)">Agu</text>
+      </svg>
+      <div style="display:flex; gap:14px; font-size:11px; margin-top:6px;">
+        <span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--color-success);margin-right:4px;"></span>Pemasukan</span>
+        <span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--color-danger);margin-right:4px;"></span>Pengeluaran</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">Iuran Warga Bulan Ini</h2>
+      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;">
+        <span style="font-weight:600; font-size:14px;">51 dari 64 KK sudah mencatat setoran</span>
+        <span class="mono" style="font-weight:700; color:var(--color-primary);">80%</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" style="width:80%;"></div></div>
+      <div class="muted" style="margin-top:8px;">Termasuk kas, sampah, keamanan, jimpitan, dan arisan.</div>
     </div>
 
     <div class="card">
@@ -364,46 +433,132 @@
   <!-- 5. KEUANGAN RT -->
   <section class="screen" id="screen-keuangan">
     <h1 class="page-title">Kas RT</h1>
-    <div class="card" style="background:var(--color-primary); color:#fff; border:none;">
-      <div style="font-size:12px; opacity:.85;">Saldo saat ini</div>
-      <div style="font-family:var(--font-display); font-size:30px; font-weight:700; margin:2px 0 10px;" class="mono">Rp4.850.000</div>
-      <div style="display:flex; gap:18px; font-size:12px;">
+    <div class="finance-hero" style="background:var(--color-primary);">
+      <div class="fh-label">Saldo saat ini</div>
+      <div class="fh-amount mono">Rp4.850.000</div>
+      <div class="fh-breakdown">
         <div>▲ Masuk: <span class="mono">Rp6.200rb</span></div>
         <div>▼ Keluar: <span class="mono">Rp1.350rb</span></div>
       </div>
     </div>
-    <div class="card">
-      <h2 class="section-title">Grafik Bulanan <span class="muted" style="font-weight:400;">2026</span></h2>
-      <svg width="100%" height="90" viewBox="0 0 320 90" preserveAspectRatio="none">
-        <rect x="10" y="40" width="18" height="50" rx="4" fill="var(--color-border)"/>
-        <rect x="50" y="25" width="18" height="65" rx="4" fill="var(--color-border)"/>
-        <rect x="90" y="10" width="18" height="80" rx="4" fill="var(--color-primary)"/>
-        <rect x="130" y="35" width="18" height="55" rx="4" fill="var(--color-border)"/>
-        <rect x="170" y="20" width="18" height="70" rx="4" fill="var(--color-border)"/>
-        <rect x="210" y="5" width="18" height="85" rx="4" fill="var(--color-primary)"/>
-        <rect x="250" y="30" width="18" height="60" rx="4" fill="var(--color-border)"/>
-        <rect x="290" y="15" width="18" height="75" rx="4" fill="var(--color-border)"/>
-      </svg>
+
+    <div class="tab-row">
+      <div class="tab-item active" data-tab="kr-ringkasan">Ringkasan</div>
+      <div class="tab-item" data-tab="kr-iuran">Iuran Warga</div>
+      <div class="tab-item" data-tab="kr-arisan">Arisan Warga</div>
+      <div class="tab-item" data-tab="kr-riwayat">Riwayat</div>
     </div>
-    <div class="card">
-      <h2 class="section-title">Transaksi Terbaru</h2>
-      <div class="list-item">
-        <div class="avatar">🧾</div>
-        <div class="list-main"><div class="list-title">Iuran Kas — Blok A</div><div class="list-sub">1 Agu 2026</div></div>
-        <div class="list-end amount-plus">+Rp450.000</div>
+
+    <div class="tab-panel active" data-panel="kr-ringkasan">
+      <div class="card">
+        <h2 class="section-title">Grafik Bulanan <span class="muted" style="font-weight:400;">2026</span></h2>
+        <svg width="100%" height="90" viewBox="0 0 320 90" preserveAspectRatio="none">
+          <rect x="10" y="40" width="18" height="50" rx="4" fill="var(--color-border)"/>
+          <rect x="50" y="25" width="18" height="65" rx="4" fill="var(--color-border)"/>
+          <rect x="90" y="10" width="18" height="80" rx="4" fill="var(--color-primary)"/>
+          <rect x="130" y="35" width="18" height="55" rx="4" fill="var(--color-border)"/>
+          <rect x="170" y="20" width="18" height="70" rx="4" fill="var(--color-border)"/>
+          <rect x="210" y="5" width="18" height="85" rx="4" fill="var(--color-primary)"/>
+          <rect x="250" y="30" width="18" height="60" rx="4" fill="var(--color-border)"/>
+          <rect x="290" y="15" width="18" height="75" rx="4" fill="var(--color-border)"/>
+        </svg>
       </div>
-      <div class="list-item">
-        <div class="avatar">🧾</div>
-        <div class="list-main"><div class="list-title">Beli material kerja bakti</div><div class="list-sub">30 Jul 2026</div></div>
-        <div class="list-end amount-minus">−Rp180.000</div>
-      </div>
-      <div class="list-item">
-        <div class="avatar">🧾</div>
-        <div class="list-main"><div class="list-title">Iuran Sampah — Blok B</div><div class="list-sub">29 Jul 2026</div></div>
-        <div class="list-end amount-plus">+Rp225.000</div>
+      <div class="card">
+        <h2 class="section-title">Komposisi per Jenis Iuran</h2>
+        <div style="margin-bottom:10px;">
+          <div style="display:flex; justify-content:space-between; font-size:13px;"><span>Kas</span><span class="mono">Rp2.400rb</span></div>
+          <div class="progress-track"><div class="progress-fill" style="width:100%;"></div></div>
+        </div>
+        <div style="margin-bottom:10px;">
+          <div style="display:flex; justify-content:space-between; font-size:13px;"><span>Arisan</span><span class="mono">Rp1.900rb</span></div>
+          <div class="progress-track"><div class="progress-fill" style="width:79%; background:var(--color-secondary);"></div></div>
+        </div>
+        <div>
+          <div style="display:flex; justify-content:space-between; font-size:13px;"><span>Sampah</span><span class="mono">Rp900rb</span></div>
+          <div class="progress-track"><div class="progress-fill" style="width:38%; background:var(--color-info);"></div></div>
+        </div>
       </div>
     </div>
-    <button class="fab" title="Tambah Transaksi">+</button>
+
+    <div class="tab-panel" data-panel="kr-iuran">
+      <div class="card" style="padding:6px 16px;">
+        <div class="list-item"><div class="avatar">01</div><div class="list-main"><div class="list-title">KK-0041 — Siti Wulandari</div><div class="list-sub">1 Agu 2026</div></div><div class="list-end amount-plus">+Rp50.000</div></div>
+        <div class="list-item"><div class="avatar">02</div><div class="list-main"><div class="list-title">KK-0018 — Ahmad Rifai</div><div class="list-sub">1 Agu 2026</div></div><div class="list-end amount-plus">+Rp50.000</div></div>
+        <div class="list-item"><div class="avatar">03</div><div class="list-main"><div class="list-title">KK-0033 — Hendra Setiawan</div><div class="list-sub">31 Jul 2026</div></div><div class="list-end amount-plus">+Rp50.000</div></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" data-panel="kr-arisan">
+      <div class="card" style="padding:6px 16px;">
+        <div class="list-item"><div class="avatar">01</div><div class="list-main"><div class="list-title">KK-0009 — Dewi Pratiwi</div><div class="list-sub">1 Agu 2026 · Setoran arisan</div></div><div class="list-end amount-plus">+Rp100.000</div></div>
+        <div class="list-item"><div class="avatar">02</div><div class="list-main"><div class="list-title">KK-0041 — Siti Wulandari</div><div class="list-sub">31 Jul 2026 · Setoran arisan</div></div><div class="list-end amount-plus">+Rp100.000</div></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" data-panel="kr-riwayat">
+      <div class="chip-row"><div class="chip active">Semua</div><div class="chip">Kas</div><div class="chip">Arisan</div><div class="chip">Sampah</div></div>
+      <div class="card" style="padding:6px 16px;">
+        <div class="list-item"><div class="avatar">🧾</div><div class="list-main"><div class="list-title">Iuran Kas — Blok A</div><div class="list-sub">1 Agu 2026</div></div><div class="list-end amount-plus">+Rp450.000</div></div>
+        <div class="list-item"><div class="avatar">🧾</div><div class="list-main"><div class="list-title">Beli material kerja bakti</div><div class="list-sub">30 Jul 2026</div></div><div class="list-end amount-minus">−Rp180.000</div></div>
+        <div class="list-item"><div class="avatar">🧾</div><div class="list-main"><div class="list-title">Iuran Sampah — Blok B</div><div class="list-sub">29 Jul 2026</div></div><div class="list-end amount-plus">+Rp225.000</div></div>
+      </div>
+    </div>
+
+    <button class="fab" title="Catat Transaksi">+</button>
+  </section>
+
+  <!-- 5b. KAS TAKMIR -->
+  <section class="screen" id="screen-kastakmir">
+    <h1 class="page-title">Kas Takmir</h1>
+    <div class="muted" style="margin:-10px 0 12px;">Langgar Al-Muchtarom</div>
+    <div class="finance-hero" style="background:var(--color-secondary);">
+      <div class="fh-label">Saldo saat ini</div>
+      <div class="fh-amount mono">Rp2.120.000</div>
+      <div class="fh-breakdown">
+        <div>▲ Masuk: <span class="mono">Rp3.400rb</span></div>
+        <div>▼ Keluar: <span class="mono">Rp1.280rb</span></div>
+      </div>
+    </div>
+
+    <div class="tab-row">
+      <div class="tab-item active" data-tab="kt-ringkasan">Ringkasan</div>
+      <div class="tab-item" data-tab="kt-riwayat">Riwayat</div>
+    </div>
+
+    <div class="tab-panel active" data-panel="kt-ringkasan">
+      <div class="card">
+        <h2 class="section-title">Grafik Bulanan <span class="muted" style="font-weight:400;">2026</span></h2>
+        <svg width="100%" height="90" viewBox="0 0 320 90" preserveAspectRatio="none">
+          <rect x="10" y="50" width="18" height="40" rx="4" fill="var(--color-border)"/>
+          <rect x="50" y="35" width="18" height="55" rx="4" fill="var(--color-border)"/>
+          <rect x="90" y="20" width="18" height="70" rx="4" fill="var(--color-secondary)"/>
+          <rect x="130" y="45" width="18" height="45" rx="4" fill="var(--color-border)"/>
+          <rect x="170" y="30" width="18" height="60" rx="4" fill="var(--color-border)"/>
+          <rect x="210" y="15" width="18" height="75" rx="4" fill="var(--color-secondary)"/>
+        </svg>
+      </div>
+      <div class="card">
+        <h2 class="section-title">Pengeluaran per Kategori</h2>
+        <div style="margin-bottom:10px;">
+          <div style="display:flex; justify-content:space-between; font-size:13px;"><span>Listrik &amp; Air</span><span class="mono">Rp620rb</span></div>
+          <div class="progress-track"><div class="progress-fill" style="width:100%; background:var(--color-secondary);"></div></div>
+        </div>
+        <div>
+          <div style="display:flex; justify-content:space-between; font-size:13px;"><span>Honor Marbot</span><span class="mono">Rp450rb</span></div>
+          <div class="progress-track"><div class="progress-fill" style="width:73%; background:var(--color-secondary);"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" data-panel="kt-riwayat">
+      <div class="chip-row"><div class="chip active">Semua</div><div class="chip">Infaq Jumat</div><div class="chip">Operasional</div></div>
+      <div class="card" style="padding:6px 16px;">
+        <div class="list-item"><div class="avatar">🧾</div><div class="list-main"><div class="list-title">Infaq Jumat</div><div class="list-sub">1 Agu 2026</div></div><div class="list-end amount-plus">+Rp380.000</div></div>
+        <div class="list-item"><div class="avatar">🧾</div><div class="list-main"><div class="list-title">Bayar listrik langgar</div><div class="list-sub">30 Jul 2026</div></div><div class="list-end amount-minus">−Rp210.000</div></div>
+      </div>
+    </div>
+
+    <button class="fab" title="Catat Transaksi">+</button>
   </section>
 
   <!-- 6. PROFIL LANGGAR -->
@@ -477,6 +632,7 @@
     warga:      { title:'Data Warga', sub:'248 warga terdaftar', role:'Sekretaris RT', nav:true },
     surat:      { title:'Ajukan Surat', sub:'Langkah 2 dari 3', role:'Warga', nav:true },
     keuangan:   { title:'Kas RT', sub:'Bendahara RT', role:'Bendahara RT', nav:true },
+    kastakmir:  { title:'Kas Takmir', sub:'Langgar Al-Muchtarom', role:'Bendahara Takmir', nav:true },
     langgar:    { title:'Profil Langgar', sub:'Takmir Al-Muchtarom', role:'Sekretaris Takmir', nav:true },
     verifikasi: { title:'Verifikasi Publik', sub:'Tanpa perlu login', role:'Publik', nav:false },
   };
@@ -492,6 +648,16 @@
   }
 
   chips.forEach(chip => chip.addEventListener('click', () => showScreen(chip.dataset.screen)));
+
+  // Tab row (Ringkasan / Iuran / Arisan / Riwayat) — dipakai di Kas RT & Kas Takmir
+  document.querySelectorAll('.tab-item').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const row = tab.closest('.tab-row');
+      const section = tab.closest('.screen');
+      row.querySelectorAll('.tab-item').forEach(t => t.classList.toggle('active', t === tab));
+      section.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.dataset.panel === tab.dataset.tab));
+    });
+  });
 
   function toggleTheme(){
     const frame = document.getElementById('appFrame');

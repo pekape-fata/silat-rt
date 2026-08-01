@@ -1,0 +1,97 @@
+<!-- src/pages/keuangan-rt/keuangan-rt.html -->
+<div class="container-compact py-3" style="max-width:640px;">
+  <h1 class="fs-5 fw-bold mb-3" style="font-family:var(--font-display);">Keuangan RT</h1>
+
+  <div class="finance-hero">
+    <div class="label">Saldo Kas RT saat ini</div>
+    <div class="amount mono" id="kr-saldo">Rp0</div>
+    <div class="breakdown">
+      <div>▲ Masuk <span class="mono" id="kr-masuk">Rp0</span></div>
+      <div>▼ Keluar <span class="mono" id="kr-keluar">Rp0</span></div>
+    </div>
+  </div>
+
+  <div class="tab-row" id="kr-tabs">
+    <div class="tab-item active" data-tab="ringkasan">Ringkasan</div>
+    <div class="tab-item" data-tab="iuran">Iuran Warga</div>
+    <div class="tab-item" data-tab="arisan">Arisan Warga</div>
+    <div class="tab-item" data-tab="riwayat">Riwayat Transaksi</div>
+  </div>
+
+  <!-- RINGKASAN -->
+  <div class="kr-panel" data-panel="ringkasan">
+    <div class="card card-body mb-3">
+      <h2 class="section-title mb-2">Grafik Bulanan <span class="text-caption" id="kr-tahun"></span></h2>
+      <div id="kr-chart"><div class="skeleton" style="height:90px;"></div></div>
+    </div>
+    <div class="card card-body mb-3">
+      <h2 class="section-title mb-2">Komposisi per Jenis Iuran (bulan ini)</h2>
+      <div id="kr-komposisi"><div class="skeleton" style="height:60px;"></div></div>
+    </div>
+  </div>
+
+  <!-- IURAN WARGA -->
+  <div class="kr-panel" data-panel="iuran" style="display:none;">
+    <div class="text-caption mb-2">Rekap setoran per Kartu Keluarga untuk jenis iuran rutin bulan berjalan.</div>
+    <div id="kr-iuran-list"><div class="skeleton" style="height:80px;"></div></div>
+  </div>
+
+  <!-- ARISAN WARGA -->
+  <div class="kr-panel" data-panel="arisan" style="display:none;">
+    <div class="text-caption mb-2">Pencatatan setoran arisan warga bulan berjalan (dikelola sebagai jenis iuran "Arisan").</div>
+    <div id="kr-arisan-list"><div class="skeleton" style="height:80px;"></div></div>
+  </div>
+
+  <!-- RIWAYAT -->
+  <div class="kr-panel" data-panel="riwayat" style="display:none;">
+    <div class="chip-row d-flex gap-2 mb-3" id="kr-filter-jenis" style="overflow-x:auto;"></div>
+    <div id="kr-riwayat-list"><div class="skeleton" style="height:120px;"></div></div>
+  </div>
+</div>
+
+<button class="fab" id="kr-fab" title="Catat Transaksi" style="display:none;">+</button>
+
+<!-- Modal Catat Transaksi -->
+<div class="modal fade" id="modalCatatTransaksiRT" tabindex="-1">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content" style="border-radius:var(--radius-card);">
+      <div class="modal-header">
+        <h5 class="modal-title fs-6 fw-bold">Catat Transaksi Kas RT</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">Tipe</label>
+        <select id="kr_tipe" class="form-select mb-3">
+          <option value="pemasukan">Pemasukan</option>
+          <option value="pengeluaran">Pengeluaran</option>
+        </select>
+
+        <div id="kr_wrap_jenis">
+          <label class="form-label">Jenis Iuran</label>
+          <select id="kr_jenis_iuran" class="form-select mb-3"></select>
+
+          <label class="form-label">Kartu Keluarga (opsional)</label>
+          <select id="kr_kk" class="form-select mb-3">
+            <option value="">— Tidak terkait KK tertentu —</option>
+          </select>
+        </div>
+
+        <label class="form-label">Nominal (Rp)</label>
+        <input id="kr_nominal" type="number" min="0" class="form-control mb-3" placeholder="Contoh: 150000">
+
+        <label class="form-label">Tanggal</label>
+        <input id="kr_tanggal" type="date" class="form-control mb-3">
+
+        <label class="form-label">Keterangan</label>
+        <textarea id="kr_keterangan" class="form-control mb-3" rows="2" placeholder="Contoh: Iuran kas Blok A bulan Agustus"></textarea>
+
+        <label class="form-label">Bukti/Nota (opsional)</label>
+        <input id="kr_bukti" type="file" accept="image/*,.pdf" class="form-control mb-2">
+        <div class="form-text" id="kr_bukti_status"></div>
+      </div>
+      <div class="modal-footer">
+        <button id="kr-btn-simpan" class="btn btn-primary w-100">Simpan Transaksi</button>
+      </div>
+    </div>
+  </div>
+</div>
