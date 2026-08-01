@@ -1,0 +1,5 @@
+/* src/assets/css/base.css */
+*{ box-sizing:border-box; }
+body{ margin:0; -webkit-font-smoothing:antialiased; }
+.mono{ font-family:var(--font-mono); }
+a{ color:var(--color-primary); }

@@ -1,0 +1,22 @@
+<!-- src/pages/auth/login.html -->
+<div class="container py-5" style="max-width:380px;">
+  <div class="text-center mb-4">
+    <div class="mx-auto mb-3 d-flex align-items-center justify-content-center"
+         style="width:64px;height:64px;border-radius:20px;background:var(--color-primary);color:#fff;font-family:var(--font-display);font-weight:700;font-size:22px;">SR</div>
+    <div class="fw-bold fs-4" style="font-family:var(--font-display);">Masuk ke SILAT RT</div>
+    <div class="text-muted small">RT 01 / RW 09 — Purwantoro, Blimbing, Malang</div>
+  </div>
+
+  <form id="form-login" class="card p-3" style="border-radius:var(--radius-card); border-color:var(--color-border);">
+    <label class="form-label small fw-semibold">Username</label>
+    <input id="username" class="form-control mb-3" placeholder="contoh: ketua.rt" autocapitalize="off" required>
+    <label class="form-label small fw-semibold">Kata Sandi</label>
+    <input id="password" type="password" class="form-control mb-3" required>
+    <div id="login-alert" class="alert alert-danger small d-none"></div>
+    <button type="submit" class="btn btn-primary fw-semibold" style="border-radius:var(--radius-btn);">Masuk</button>
+  </form>
+
+  <div class="text-center mt-3">
+    <a href="#/ajukan-surat" class="small text-decoration-none">Ingin mengajukan surat tanpa login? Klik di sini</a>
+  </div>
+</div>

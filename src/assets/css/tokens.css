@@ -1,0 +1,46 @@
+/* =========================================================
+   SILAT RT — src/assets/css/tokens.css
+   Design tokens hasil Tahap 6 (Design System)
+   ========================================================= */
+
+:root{
+  /* Light mode */
+  --color-primary:#0F6B5C;
+  --color-primary-container:#D3ECE4;
+  --color-secondary:#E8A33D;
+  --color-secondary-container:#FBEBD1;
+  --color-surface:#F7F5F0;
+  --color-surface-card:#FFFFFF;
+  --color-border:#E4E0D6;
+  --color-text-primary:#1B2B27;
+  --color-text-muted:#5C6B66;
+  --color-success:#2E7D53;
+  --color-danger:#C0392B;
+  --color-info:#2E6F9E;
+
+  --radius-card:16px;
+  --radius-btn:12px;
+  --radius-pill:999px;
+
+  --font-display:'Sora',sans-serif;
+  --font-body:'Plus Jakarta Sans',sans-serif;
+  --font-mono:'IBM Plex Mono',monospace;
+}
+
+[data-theme="dark"]{
+  --color-primary:#5FCBB0;
+  --color-primary-container:#0F2A24;
+  --color-secondary:#F0BE6C;
+  --color-secondary-container:#3A2C15;
+  --color-surface:#0F1A17;
+  --color-surface-card:#17251F;
+  --color-border:#25352F;
+  --color-text-primary:#EAF3EF;
+  --color-text-muted:#93A6A0;
+}
+
+body{
+  background:var(--color-surface);
+  color:var(--color-text-primary);
+  font-family:var(--font-body);
+}
