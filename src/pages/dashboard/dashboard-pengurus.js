@@ -61,12 +61,16 @@ function renderStatGrid({ profile, hasRT, hasTakmir, rtTotals, takmirTotals }) {
 
   if (hasRT) {
     cards.push(statCardHtml({
-      value: formatRupiah(rtTotals.saldo), label: 'Saldo Kas RT', color: 'var(--color-success)', href: '#/keuangan-rt',
+      value: formatRupiah(rtTotals.saldo), label: 'Saldo Kas RT', color: 'var(--color-success)',
+      bg: 'var(--color-success-container)', href: '#/keuangan-rt',
+      icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4"/><path d="M21 12h-4a2 2 0 0 0 0 4h4"/></svg>',
     }));
   }
   if (hasTakmir) {
     cards.push(statCardHtml({
-      value: formatRupiah(takmirTotals.saldo), label: 'Saldo Kas Takmir', color: 'var(--color-primary)', href: '#/keuangan-takmir',
+      value: formatRupiah(takmirTotals.saldo), label: 'Saldo Kas Takmir', color: 'var(--color-primary)',
+      bg: 'var(--color-primary-container)', href: '#/keuangan-takmir',
+      icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21v-7l7-6 7 6v7"/><path d="M12 3v3M9 9a3 3 0 0 1 6 0"/></svg>',
     }));
   }
 
@@ -78,9 +82,11 @@ function renderStatGrid({ profile, hasRT, hasTakmir, rtTotals, takmirTotals }) {
   }
 }
 
-function statCardHtml({ value, label, color, href }) {
+function statCardHtml({ value, label, color, bg, href, icon }) {
+  const iconHtml = icon ? `<div class="stat-icon" style="background:${bg || 'var(--color-surface-alt)'};color:${color};">${icon}</div>` : '';
   const inner = `
     <div class="card stat-card card-body card-hover">
+      ${iconHtml}
       <div class="stat-value mono" style="color:${color};">${value}</div>
       <div class="stat-label">${label}</div>
     </div>`;

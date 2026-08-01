@@ -1,22 +1,118 @@
 <!-- src/pages/auth/login.html -->
-<div class="container py-5" style="max-width:380px;">
-  <div class="text-center mb-4">
-    <div class="mx-auto mb-3 d-flex align-items-center justify-content-center"
-         style="width:64px;height:64px;border-radius:20px;background:var(--color-primary);color:#fff;font-family:var(--font-display);font-weight:700;font-size:22px;">SR</div>
-    <div class="fw-bold fs-4" style="font-family:var(--font-display);">Masuk ke SILAT RT</div>
-    <div class="text-muted small">RT 01 / RW 09 — Purwantoro, Blimbing, Malang</div>
-  </div>
+<div class="auth-shell">
 
-  <form id="form-login" class="card p-3" style="border-radius:var(--radius-card); border-color:var(--color-border);">
-    <label class="form-label small fw-semibold">Username</label>
-    <input id="username" class="form-control mb-3" placeholder="contoh: ketua.rt" autocapitalize="off" required>
-    <label class="form-label small fw-semibold">Kata Sandi</label>
-    <input id="password" type="password" class="form-control mb-3" required>
-    <div id="login-alert" class="alert alert-danger small d-none"></div>
-    <button type="submit" class="btn btn-primary fw-semibold" style="border-radius:var(--radius-btn);">Masuk</button>
-  </form>
+  <!-- Panel kiri: brand & informasi (tampil di layar besar) -->
+  <aside class="auth-shell__brand">
+    <div class="auth-shell__blob" style="width:280px;height:280px;top:-80px;right:-60px;"></div>
+    <div class="auth-shell__blob" style="width:200px;height:200px;bottom:-40px;left:-40px;animation-delay:-4s;"></div>
 
-  <div class="text-center mt-3">
-    <a href="#/ajukan-surat" class="small text-decoration-none">Ingin mengajukan surat tanpa login? Klik di sini</a>
+    <div style="position:relative;z-index:1;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:48px;">
+        <div style="width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,0.14);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;">SR</div>
+        <span style="font-family:var(--font-display);font-weight:700;font-size:1.05rem;">SILAT RT</span>
+      </div>
+
+      <h1 style="font-family:var(--font-display);font-weight:700;font-size:2.1rem;line-height:1.25;max-width:420px;margin-bottom:16px;">
+        Kelola RT &amp; Langgar<br>lebih rapi, transparan,<br>dan tanpa ribet kertas.
+      </h1>
+      <p style="opacity:.85;max-width:400px;font-size:0.95rem;">
+        Satu aplikasi untuk keuangan RT, kas takmir, surat-menyurat, dan agenda warga —
+        semua tercatat rapi dan bisa dipantau kapan saja.
+      </p>
+    </div>
+
+    <div style="position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:420px;">
+      <div class="auth-stat">
+        <span class="auth-stat__icon">💰</span>
+        <div>
+          <div class="auth-stat__value">Real-time</div>
+          <div class="auth-stat__label">Kas &amp; iuran warga</div>
+        </div>
+      </div>
+      <div class="auth-stat">
+        <span class="auth-stat__icon">📄</span>
+        <div>
+          <div class="auth-stat__value">Digital</div>
+          <div class="auth-stat__label">Surat &amp; tanda tangan</div>
+        </div>
+      </div>
+      <div class="auth-stat">
+        <span class="auth-stat__icon">🕌</span>
+        <div>
+          <div class="auth-stat__value">Terpadu</div>
+          <div class="auth-stat__label">Kas &amp; jadwal takmir</div>
+        </div>
+      </div>
+      <div class="auth-stat">
+        <span class="auth-stat__icon">🔒</span>
+        <div>
+          <div class="auth-stat__value">Aman</div>
+          <div class="auth-stat__label">Akses berbasis peran</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Panel kanan: form login -->
+  <div class="auth-shell__form">
+    <div class="auth-card">
+      <div class="text-center mb-4">
+        <div class="auth-logo">SR</div>
+        <div class="fw-bold fs-4" style="font-family:var(--font-display);">Masuk ke SILAT RT</div>
+        <div class="text-muted small mt-1">RT 01 / RW 09 — Purwantoro, Blimbing, Malang</div>
+      </div>
+
+      <form id="form-login" novalidate>
+        <div class="mb-3">
+          <label class="form-label" for="username">Username</label>
+          <div class="input-group-modern">
+            <span class="input-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </span>
+            <input id="username" name="username" class="form-control" placeholder="contoh: ketua.rt"
+                   autocapitalize="off" autocomplete="username" required>
+          </div>
+          <div class="invalid-feedback-text text-danger small mt-1 d-none" id="err-username">Username minimal 3 karakter.</div>
+        </div>
+
+        <div class="mb-2">
+          <label class="form-label" for="password">Kata Sandi</label>
+          <div class="input-group-modern">
+            <span class="input-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </span>
+            <input id="password" name="password" type="password" class="form-control" autocomplete="current-password" required>
+            <button type="button" class="input-toggle" id="btn-toggle-password" aria-label="Tampilkan kata sandi" tabindex="-1">
+              <svg id="icon-eye" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="remember-me">
+            <label class="form-check-label small text-muted" for="remember-me">Ingat saya</label>
+          </div>
+          <a href="#" class="small" id="link-lupa-sandi">Lupa sandi?</a>
+        </div>
+
+        <div id="login-alert" class="alert alert-danger small d-none" role="alert"></div>
+
+        <button type="submit" id="btn-submit-login" class="btn btn-primary fw-semibold w-100">Masuk</button>
+      </form>
+
+      <div class="d-flex align-items-center gap-2 my-4" style="color:var(--color-text-muted);">
+        <div style="flex:1;height:1px;background:var(--color-border);"></div>
+        <span class="small">atau</span>
+        <div style="flex:1;height:1px;background:var(--color-border);"></div>
+      </div>
+
+      <a href="#/ajukan-surat" class="btn btn-outline-secondary w-100 fw-semibold d-flex align-items-center justify-content-center gap-2">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+        Ajukan Surat Tanpa Login
+      </a>
+
+      <p class="text-center text-caption mt-4 mb-0">© 2026 SILAT RT — Sistem Informasi Langgar &amp; RT</p>
+    </div>
   </div>
 </div>

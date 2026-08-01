@@ -1,7 +1,16 @@
 /* =========================================================
    SILAT RT — src/assets/css/components.css
-   Komponen visual — implementasi docs/06a-design-system.md §A.5
+   Komponen visual v2 — lebih modern, hidup, dan interaktif
    ========================================================= */
+
+/* ---------------------------------------------------------
+   PAGE TRANSITION
+   --------------------------------------------------------- */
+@keyframes page-fade-in{
+  from{ opacity:0; transform:translateY(6px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+#page-content{ animation:page-fade-in var(--transition-slow); }
 
 /* ---------------------------------------------------------
    TOP APP BAR
@@ -17,44 +26,81 @@
   top:0;
   z-index:20;
 }
+.app-topbar__brand{
+  display:flex; align-items:center; gap:10px; flex:1; min-width:0;
+}
+.app-topbar__logo{
+  width:34px; height:34px; border-radius:10px; flex:0 0 auto;
+  background:var(--gradient-brand); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-display); font-weight:700; font-size:13px;
+  box-shadow:var(--shadow-brand);
+}
 .app-topbar__title{
   font-family:var(--font-display);
   font-weight:700;
   font-size:var(--fs-h2);
   margin:0;
-  flex:1;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
 .app-topbar__badge-role{
-  font-size:var(--fs-caption);
-  font-weight:600;
-  padding:2px var(--space-2);
+  font-size:11px;
+  font-weight:700;
+  padding:3px var(--space-2);
   border-radius:var(--radius-pill);
   background:var(--color-primary-container);
   color:var(--color-primary);
+  white-space:nowrap;
 }
+.icon-btn{
+  width:38px; height:38px; border-radius:999px; flex:0 0 auto;
+  display:flex; align-items:center; justify-content:center;
+  border:1px solid var(--color-border); background:var(--color-surface-card);
+  color:var(--color-text-primary); cursor:pointer;
+  transition:background var(--transition-base), transform var(--transition-base);
+}
+.icon-btn:hover{ background:var(--color-surface-alt); }
+.icon-btn:active{ transform:scale(0.94); }
+.avatar-btn{
+  width:38px; height:38px; border-radius:999px; flex:0 0 auto; border:none;
+  background:var(--color-primary-container); color:var(--color-primary);
+  font-weight:700; font-size:12px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:transform var(--transition-base), box-shadow var(--transition-base);
+}
+.avatar-btn:hover{ box-shadow:0 0 0 3px var(--color-primary-container); }
+.avatar-btn:active{ transform:scale(0.94); }
 
 /* ---------------------------------------------------------
-   BOTTOM NAVIGATION (mobile) — glassmorphism ringan, sesuai spesifikasi
+   BOTTOM NAVIGATION (mobile) — glassmorphism + indikator aktif
    --------------------------------------------------------- */
 .app-bottomnav{
   position:fixed;
   left:0; right:0; bottom:0;
   display:flex;
   justify-content:space-around;
-  padding:var(--space-2) var(--space-2) max(var(--space-2), env(safe-area-inset-bottom));
-  background:rgba(255,255,255,0.7);
-  backdrop-filter:blur(16px);
-  -webkit-backdrop-filter:blur(16px);
+  padding:6px var(--space-2) max(6px, env(safe-area-inset-bottom));
+  background:rgba(255,255,255,0.78);
+  backdrop-filter:blur(18px) saturate(160%);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);
   border-top:1px solid var(--color-border);
   z-index:30;
 }
-[data-theme="dark"] .app-bottomnav{ background:rgba(15,26,23,0.7); }
+[data-theme="dark"] .app-bottomnav{ background:rgba(13,22,19,0.78); }
 .app-bottomnav__item{
+  position:relative;
   display:flex; flex-direction:column; align-items:center; gap:2px;
-  font-size:11px; color:var(--color-text-muted);
-  min-width:44px; min-height:44px; justify-content:center;
+  font-size:11px; font-weight:600; color:var(--color-text-muted);
+  min-width:44px; min-height:48px; justify-content:center;
+  border-radius:14px; padding:4px 10px;
+  transition:color var(--transition-base), background var(--transition-base);
 }
-.app-bottomnav__item.active{ color:var(--color-primary); font-weight:600; }
+.app-bottomnav__item svg{ width:21px; height:21px; transition:transform var(--transition-base); }
+.app-bottomnav__item:hover{ color:var(--color-primary); }
+.app-bottomnav__item.active{ color:var(--color-primary); font-weight:700; }
+.app-bottomnav__item.active{ background:var(--color-primary-container); }
+.app-bottomnav__item.active svg{ transform:translateY(-1px); }
+.app-bottomnav__item--stub{ opacity:.55; }
 
 /* ---------------------------------------------------------
    KARTU
@@ -68,7 +114,7 @@
 }
 .card.card-hover:hover{
   box-shadow:var(--shadow-md);
-  transform:translateY(-1px);
+  transform:translateY(-2px);
 }
 .card-body{ padding:var(--space-4); }
 .card-header{
@@ -80,6 +126,7 @@
 }
 
 /* Kartu statistik dashboard */
+.stat-card{ position:relative; overflow:hidden; }
 .stat-card .stat-value{
   font-family:var(--font-display);
   font-size:var(--fs-display);
@@ -92,42 +139,59 @@
   text-transform:uppercase;
   letter-spacing:0.03em;
 }
+.stat-card .stat-icon{
+  width:36px; height:36px; border-radius:11px; display:flex; align-items:center; justify-content:center;
+  font-size:17px; margin-bottom:8px;
+}
 
 /* ---------------------------------------------------------
-   TOMBOL — kompak, tegas, radius konsisten
+   TOMBOL — kompak, tegas, dengan gradasi halus
    --------------------------------------------------------- */
 .btn{
   font-weight:600;
   font-size:var(--fs-body);
   padding:0.5rem 1rem;
   border-radius:var(--radius-btn);
-  transition:filter var(--transition-base), transform var(--transition-base);
+  transition:filter var(--transition-base), transform var(--transition-base), box-shadow var(--transition-base);
 }
 .btn:active{ transform:scale(0.98); }
 .btn-sm{ padding:0.35rem 0.75rem; font-size:var(--fs-caption); min-height:36px; }
 
 .btn-primary{
-  background-color:var(--color-primary) !important;
+  background:var(--gradient-brand) !important;
   border-color:var(--color-primary) !important;
   color:#fff !important;
+  box-shadow:var(--shadow-brand);
 }
-.btn-primary:hover{ filter:brightness(1.08); }
+.btn-primary:hover{ filter:brightness(1.06); box-shadow:0 14px 30px rgba(15,107,92,0.34); }
+.btn-primary:disabled{ opacity:.7; box-shadow:none; }
 
 .btn-secondary-accent{
-  background-color:var(--color-secondary) !important;
+  background:var(--gradient-gold) !important;
   border-color:var(--color-secondary) !important;
   color:#3A2C0E !important;
+  box-shadow:var(--shadow-gold);
 }
 
 .btn-outline-secondary{
   color:var(--color-text-primary);
   border-color:var(--color-border);
+  background:var(--color-surface-card);
 }
 .btn-outline-secondary:hover{
-  background:var(--color-surface);
+  background:var(--color-surface-alt);
   border-color:var(--color-text-muted);
   color:var(--color-text-primary);
 }
+
+.btn-loading{ position:relative; color:transparent !important; pointer-events:none; }
+.btn-loading::after{
+  content:""; position:absolute; left:50%; top:50%; width:18px; height:18px;
+  margin:-9px 0 0 -9px; border-radius:50%;
+  border:2.5px solid rgba(255,255,255,0.4); border-top-color:#fff;
+  animation:btn-spin 0.7s linear infinite;
+}
+@keyframes btn-spin{ to{ transform:rotate(360deg); } }
 
 /* ---------------------------------------------------------
    FORM
@@ -141,7 +205,7 @@
 .form-control, .form-select{
   border-radius:var(--radius-btn);
   border-color:var(--color-border);
-  padding:0.55rem 0.85rem;
+  padding:0.6rem 0.85rem;
   font-size:var(--fs-body);
   background:var(--color-surface-card);
   color:var(--color-text-primary);
@@ -152,9 +216,23 @@
 }
 .form-text{ font-size:var(--fs-caption); color:var(--color-text-muted); }
 
+.input-group-modern{ position:relative; }
+.input-group-modern .form-control{ padding-left:2.6rem; }
+.input-group-modern .input-icon{
+  position:absolute; left:12px; top:50%; transform:translateY(-50%);
+  color:var(--color-text-muted); display:flex; pointer-events:none;
+}
+.input-group-modern .input-toggle{
+  position:absolute; right:6px; top:50%; transform:translateY(-50%);
+  background:none; border:none; color:var(--color-text-muted); cursor:pointer;
+  width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center;
+}
+.input-group-modern .input-toggle:hover{ background:var(--color-surface-alt); color:var(--color-text-primary); }
+
+.form-check-input:checked{ background-color:var(--color-primary); border-color:var(--color-primary); }
+
 /* ---------------------------------------------------------
-   BADGE STATUS SURAT — dipetakan ke 9 nilai enum status (revisi 05e/006)
-   Pakai: <span class="status-badge" data-status="menunggu_verifikasi">Menunggu Verifikasi</span>
+   BADGE STATUS SURAT
    --------------------------------------------------------- */
 .status-badge{
   display:inline-flex;
@@ -183,9 +261,7 @@
 .status-badge[data-status="ditolak"]{ background:var(--color-danger-container); color:var(--color-danger); }
 
 /* ---------------------------------------------------------
-   RING STATUS — elemen tanda tangan visual aplikasi (§A.1)
-   SVG arc dua warna, dipakai via komponen JS yang menyuntik --pct
-   Pakai: <div class="ring-status" style="--pct:45"><svg>...</svg></div>
+   RING STATUS
    --------------------------------------------------------- */
 .ring-status{
   --pct:0;
@@ -201,7 +277,7 @@
 }
 
 /* ---------------------------------------------------------
-   MODAL — selaraskan dengan radius & tipografi
+   MODAL
    --------------------------------------------------------- */
 .modal-content{
   border-radius:var(--radius-card);
@@ -213,7 +289,7 @@
 .modal-title{ font-family:var(--font-display); font-weight:700; font-size:var(--fs-h2); }
 
 /* ---------------------------------------------------------
-   ALERT — kompak
+   ALERT
    --------------------------------------------------------- */
 .alert{ border-radius:var(--radius-btn); font-size:var(--fs-caption); padding:var(--space-3); }
 
@@ -229,7 +305,7 @@
 .empty-state .btn{ margin-top:var(--space-3); }
 
 /* ---------------------------------------------------------
-   TAB ROW — dipakai di Keuangan RT/Takmir (Ringkasan/Iuran/Arisan/Riwayat)
+   TAB ROW
    --------------------------------------------------------- */
 .tab-row{
   display:flex; gap:var(--space-2); overflow-x:auto; padding-bottom:2px; margin-bottom:var(--space-4);
@@ -240,45 +316,53 @@
   flex:0 0 auto; padding:8px 14px; border-radius:var(--radius-pill); font-size:var(--fs-caption); font-weight:600;
   background:var(--color-surface-card); border:1px solid var(--color-border); color:var(--color-text-muted);
   cursor:pointer; min-height:36px; white-space:nowrap;
+  transition:background var(--transition-base), color var(--transition-base), border-color var(--transition-base);
 }
-.tab-item.active{ background:var(--color-primary); border-color:var(--color-primary); color:#fff; }
+.tab-item.active{ background:var(--gradient-brand); border-color:var(--color-primary); color:#fff; box-shadow:var(--shadow-brand); }
 
 /* ---------------------------------------------------------
-   HERO SALDO — kartu ringkasan saldo besar (Keuangan RT/Takmir)
+   HERO SALDO
    --------------------------------------------------------- */
 .finance-hero{
-  background:var(--color-primary); color:#fff; border-radius:var(--radius-card);
-  padding:var(--space-4) var(--space-4) var(--space-4); margin-bottom:var(--space-4);
+  background:var(--gradient-brand-radial); color:#fff; border-radius:var(--radius-card-lg);
+  padding:var(--space-5) var(--space-4) var(--space-4); margin-bottom:var(--space-4);
+  position:relative; overflow:hidden; box-shadow:var(--shadow-brand);
+}
+.finance-hero::after{
+  content:""; position:absolute; right:-40px; top:-40px; width:160px; height:160px; border-radius:50%;
+  background:radial-gradient(circle, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0) 70%);
 }
 .finance-hero .label{ font-size:var(--fs-caption); opacity:.85; }
-.finance-hero .amount{ font-family:var(--font-display); font-size:1.9rem; font-weight:700; margin:2px 0 10px; }
-.finance-hero .breakdown{ display:flex; gap:var(--space-5); font-size:var(--fs-caption); }
+.finance-hero .amount{ font-family:var(--font-display); font-size:2rem; font-weight:700; margin:2px 0 12px; }
+.finance-hero .breakdown{ display:flex; gap:var(--space-5); font-size:var(--fs-caption); position:relative; z-index:1; }
 
-/* Kartu statistik yang bisa diklik (navigasi ke modul terkait) */
+/* Kartu statistik yang bisa diklik */
 .stat-card-link{ text-decoration:none; color:inherit; display:block; cursor:pointer; }
-.stat-card-link:hover{ box-shadow:var(--shadow-md); }
+.stat-card-link:hover{ box-shadow:var(--shadow-md); transform:translateY(-2px); }
 
 /* ---------------------------------------------------------
-   MINI BAR CHART — tren bulanan sederhana berbasis SVG
+   MINI BAR CHART
    --------------------------------------------------------- */
 .mini-bar-chart{ width:100%; height:auto; }
 .mini-bar-chart rect{ transition:opacity var(--transition-base); }
 .mini-bar-chart .bar-label{ font-family:var(--font-body); font-size:9px; fill:var(--color-text-muted); }
 
 /* ---------------------------------------------------------
-   QUICK ACTION GRID — tombol aksi cepat dashboard
+   QUICK ACTION GRID
    --------------------------------------------------------- */
 .quick-action-grid{ display:grid; grid-template-columns:repeat(2, 1fr); gap:var(--space-3); margin-bottom:var(--space-4); }
 .quick-action{
   display:flex; flex-direction:column; align-items:flex-start; gap:6px;
   padding:var(--space-3); border-radius:var(--radius-card); border:1px solid var(--color-border);
   background:var(--color-surface-card); cursor:pointer; text-align:left; min-height:44px;
+  transition:box-shadow var(--transition-base), transform var(--transition-base);
 }
+.quick-action:hover{ box-shadow:var(--shadow-md); transform:translateY(-1px); }
 .quick-action .qa-icon{ font-size:20px; }
 .quick-action .qa-label{ font-size:var(--fs-caption); font-weight:700; }
 
 /* ---------------------------------------------------------
-   CHIP FILTER — dipakai di daftar/riwayat (search & filter)
+   CHIP FILTER
    --------------------------------------------------------- */
 .chip-row{ display:flex; gap:var(--space-2); overflow-x:auto; scrollbar-width:none; }
 .chip-row::-webkit-scrollbar{ display:none; }
@@ -290,13 +374,16 @@
 .chip.active{ background:var(--color-primary-container); color:var(--color-primary); border-color:var(--color-primary-container); }
 
 /* ---------------------------------------------------------
-   FAB — tombol aksi mengambang (Catat Transaksi)
+   FAB
    --------------------------------------------------------- */
 .fab{
-  position:fixed; right:18px; bottom:104px; width:52px; height:52px; border-radius:999px;
-  background:var(--color-secondary); color:#fff; display:flex; align-items:center; justify-content:center;
-  font-size:22px; border:none; box-shadow:0 8px 20px rgba(232,163,61,0.4); cursor:pointer; z-index:25;
+  position:fixed; right:18px; bottom:104px; width:54px; height:54px; border-radius:999px;
+  background:var(--gradient-gold); color:#3A2C0E; display:flex; align-items:center; justify-content:center;
+  font-size:22px; border:none; box-shadow:var(--shadow-gold); cursor:pointer; z-index:25;
+  transition:transform var(--transition-base);
 }
+.fab:hover{ transform:scale(1.06); }
+.fab:active{ transform:scale(0.96); }
 
 /* ---------------------------------------------------------
    SKELETON LOADING
@@ -310,4 +397,51 @@
 @keyframes skeleton-pulse{
   0%{ background-position:200% 0; }
   100%{ background-position:-200% 0; }
+}
+
+/* ---------------------------------------------------------
+   LOGIN PAGE
+   --------------------------------------------------------- */
+.auth-shell{
+  min-height:100vh; display:flex; align-items:stretch; background:var(--color-surface);
+}
+.auth-shell__brand{
+  flex:1; position:relative; display:none; overflow:hidden;
+  background:var(--gradient-brand-radial); color:#fff;
+  padding:var(--space-6);
+  flex-direction:column; justify-content:space-between;
+}
+.auth-shell__blob{
+  position:absolute; border-radius:50%; filter:blur(2px);
+  background:radial-gradient(circle, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 70%);
+  animation:blob-float 12s ease-in-out infinite;
+}
+@keyframes blob-float{
+  0%,100%{ transform:translate(0,0) scale(1); }
+  50%{ transform:translate(20px,-24px) scale(1.08); }
+}
+.auth-shell__form{
+  flex:1; display:flex; align-items:center; justify-content:center; padding:var(--space-5);
+}
+.auth-card{
+  width:100%; max-width:400px; background:var(--color-surface-card);
+  border:1px solid var(--color-border); border-radius:var(--radius-card-lg);
+  box-shadow:var(--shadow-lg); padding:var(--space-6) var(--space-5);
+  animation:page-fade-in var(--transition-slow);
+}
+.auth-logo{
+  width:56px; height:56px; border-radius:16px; display:flex; align-items:center; justify-content:center;
+  background:var(--gradient-brand); color:#fff; font-family:var(--font-display); font-weight:700; font-size:20px;
+  box-shadow:var(--shadow-brand); margin:0 auto var(--space-4);
+}
+.auth-stat{
+  display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:14px;
+  background:rgba(255,255,255,0.08); backdrop-filter:blur(6px);
+}
+.auth-stat__icon{ font-size:18px; }
+.auth-stat__value{ font-family:var(--font-display); font-weight:700; font-size:1rem; line-height:1.1; }
+.auth-stat__label{ font-size:11px; opacity:.8; }
+
+@media (min-width: 900px){
+  .auth-shell__brand{ display:flex; }
 }

@@ -1,18 +1,21 @@
 /* =========================================================
    SILAT RT — src/assets/css/tokens.css
-   Design tokens — implementasi penuh dari docs/06a-design-system.md
+   Design tokens v2 — palet modern, gradient, dan elevasi yang
+   lebih hidup, tetap ramah aksesibilitas (kontras & ukuran teks).
    ========================================================= */
 
 :root{
-  /* ---- Warna (Light Mode) ---- */
+  /* ---- Warna Inti (Light Mode) ---- */
   --color-primary:#0F6B5C;
+  --color-primary-600:#0B5548;
   --color-primary-container:#D3ECE4;
   --color-secondary:#E8A33D;
   --color-secondary-container:#FBEBD1;
-  --color-surface:#F7F5F0;
+  --color-surface:#F5F7F6;
   --color-surface-card:#FFFFFF;
+  --color-surface-alt:#EEF3F1;
   --color-border:#E4E0D6;
-  --color-text-primary:#1B2B27;
+  --color-text-primary:#152420;
   --color-text-muted:#5C6B66;
   --color-success:#2E7D53;
   --color-success-container:#DCEFE3;
@@ -21,8 +24,15 @@
   --color-info:#2E6F9E;
   --color-info-container:#DCEBF5;
 
+  /* ---- Gradasi identitas (dipakai di hero, login, topbar brand) ---- */
+  --gradient-brand: linear-gradient(135deg, #0F6B5C 0%, #12866F 45%, #1CA98A 100%);
+  --gradient-brand-radial: radial-gradient(120% 120% at 10% 0%, #14806C 0%, #0B4A3F 60%, #082F28 100%);
+  --gradient-gold: linear-gradient(135deg, #E8A33D 0%, #F0BE6C 100%);
+  --gradient-surface-sheen: linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 100%);
+
   /* ---- Bentuk ---- */
-  --radius-card:16px;
+  --radius-card:18px;
+  --radius-card-lg:24px;
   --radius-btn:12px;
   --radius-sm:8px;
   --radius-pill:999px;
@@ -47,17 +57,19 @@
   --space-5:24px;
   --space-6:32px;
 
-  /* ---- Elevasi (flat design, shadow sangat tipis) ---- */
-  --shadow-sm:0 1px 2px rgba(27,43,39,0.06);
-  --shadow-md:0 4px 16px rgba(27,43,39,0.08);
-  --shadow-glass:0 8px 32px rgba(27,43,39,0.12);
+  /* ---- Elevasi ---- */
+  --shadow-sm:0 1px 2px rgba(21,36,32,0.06), 0 1px 1px rgba(21,36,32,0.04);
+  --shadow-md:0 8px 24px rgba(21,36,32,0.08), 0 2px 6px rgba(21,36,32,0.05);
+  --shadow-lg:0 16px 40px rgba(21,36,32,0.14), 0 4px 10px rgba(21,36,32,0.06);
+  --shadow-glass:0 8px 32px rgba(21,36,32,0.12);
+  --shadow-brand:0 12px 28px rgba(15,107,92,0.28);
+  --shadow-gold:0 10px 22px rgba(232,163,61,0.35);
 
   /* ---- Transisi ---- */
   --transition-base:150ms ease;
+  --transition-slow:280ms cubic-bezier(.4,0,.2,1);
 
-  /* ---- Remap variabel Bootstrap 5.3 ke token di atas
-         (supaya komponen Bootstrap ikut memakai identitas visual
-         tanpa perlu override setiap class satu per satu) ---- */
+  /* ---- Remap variabel Bootstrap 5.3 ke token di atas ---- */
   --bs-body-font-family:var(--font-body);
   --bs-body-font-size:var(--fs-body);
   --bs-body-color:var(--color-text-primary);
@@ -80,21 +92,28 @@
 
 [data-theme="dark"]{
   --color-primary:#5FCBB0;
+  --color-primary-600:#7FDCC4;
   --color-primary-container:#0F2A24;
   --color-secondary:#F0BE6C;
   --color-secondary-container:#3A2C15;
-  --color-surface:#0F1A17;
-  --color-surface-card:#17251F;
-  --color-border:#25352F;
+  --color-surface:#0D1613;
+  --color-surface-card:#152420;
+  --color-surface-alt:#111E1A;
+  --color-border:#243832;
   --color-text-primary:#EAF3EF;
   --color-text-muted:#93A6A0;
   --color-success-container:#123527;
   --color-danger-container:#3A1E1A;
   --color-info-container:#152A38;
 
-  --shadow-sm:0 1px 2px rgba(0,0,0,0.25);
-  --shadow-md:0 4px 16px rgba(0,0,0,0.35);
+  --gradient-brand: linear-gradient(135deg, #0B4A3F 0%, #0F6B5C 45%, #17977F 100%);
+  --gradient-brand-radial: radial-gradient(120% 120% at 10% 0%, #103F36 0%, #081512 70%, #050b09 100%);
+
+  --shadow-sm:0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md:0 8px 24px rgba(0,0,0,0.4);
+  --shadow-lg:0 16px 40px rgba(0,0,0,0.5);
   --shadow-glass:0 8px 32px rgba(0,0,0,0.45);
+  --shadow-brand:0 12px 28px rgba(0,0,0,0.5);
 
   --bs-primary-rgb:95,203,176;
 }

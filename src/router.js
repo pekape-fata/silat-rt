@@ -36,6 +36,8 @@ function initials(text) {
   return String(text || '?').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
 }
 
+const ICON_THEME = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>';
+
 function renderShell(profile, activeRoutePath) {
   const navKeys = getNavForRole(profile.role);
 
@@ -55,12 +57,13 @@ function renderShell(profile, activeRoutePath) {
 
   return `
     <header class="app-topbar">
-      <p class="app-topbar__title">SILAT RT</p>
+      <div class="app-topbar__brand">
+        <div class="app-topbar__logo">SR</div>
+        <p class="app-topbar__title">SILAT RT</p>
+      </div>
       <span class="app-topbar__badge-role">${profile.role || ''}</span>
-      <button type="button" class="icon-btn" id="btn-toggle-theme" title="Ganti tema"
-        style="width:38px;height:38px;border-radius:999px;border:1px solid var(--color-border);background:var(--color-surface-card);flex:0 0 auto;">◐</button>
-      <button type="button" id="btn-avatar-logout" title="Keluar"
-        style="width:38px;height:38px;border-radius:999px;background:var(--color-primary-container);color:var(--color-primary);border:none;font-weight:700;font-size:12px;flex:0 0 auto;">
+      <button type="button" class="icon-btn" id="btn-toggle-theme" title="Ganti tema">${ICON_THEME}</button>
+      <button type="button" class="avatar-btn" id="btn-avatar-logout" title="Keluar">
         ${initials(profile.nama_lengkap || profile.username)}
       </button>
     </header>
