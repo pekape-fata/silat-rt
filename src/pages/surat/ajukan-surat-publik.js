@@ -1,6 +1,8 @@
 // src/pages/surat/ajukan-surat-publik.js
-// Halaman PUBLIK — insert langsung ke tabel `surat` sebagai role anon
-// (diizinkan oleh policy "surat_public_insert", revisi 05e).
+// Halaman PUBLIK — mengajukan surat lewat RPC "ajukan_surat_publik"
+// (bukan insert+update langsung ke tabel, lihat migrasi 015 untuk
+// alasannya — insert+update terpisah memicu error RLS pada langkah
+// update karena tidak ada policy UPDATE yang mengizinkan anon).
 import { supabase } from '../../lib/supabaseClient.js';
 
 export async function init() {
@@ -18,26 +20,24 @@ export async function init() {
     btnSimpan.textContent = 'Menyimpan...';
 
     try {
-      const payload = {
-        jenis_surat_id: jenisSelect.value,
-        nik_pemohon: document.getElementById('nik_pemohon').value.trim(),
-        nama_pemohon: document.getElementById('nama_pemohon').value.trim(),
-        no_hp_pemohon: document.getElementById('no_hp_pemohon').value.trim(),
-        isi_surat: document.getElementById('keperluan').value.trim(), // draf awal, akan disusun ulang oleh Sekretaris RT dari template
-        status: 'draf_publik',
-        diajukan_tanpa_login: true,
-      };
+      const nik = document.getElementById('nik_pemohon').value.trim();
+      const nama = document.getElementById('nama_pemohon').value.trim();
+      const noHp = document.getElementById('no_hp_pemohon').value.trim();
+      const keperluan = document.getElementById('keperluan').value.trim();
 
-      validasi(payload);
+      validasi({ nik, nama, noHp });
 
-      // 1. SIMPAN pengajuan
-      const { data, error } = await supabase.from('surat').insert(payload).select('id').single();
+      const { data: idPengajuan, error } = await supabase.rpc('ajukan_surat_publik', {
+        p_jenis_surat_id: jenisSelect.value,
+        p_nik_pemohon: nik,
+        p_nama_pemohon: nama,
+        p_no_hp_pemohon: noHp,
+        p_isi_surat: keperluan,
+      });
+
       if (error) throw error;
 
-      // 2. Update status jadi "menunggu_verifikasi" agar langsung masuk antrian Sekretaris RT
-      await supabase.from('surat').update({ status: 'menunggu_verifikasi' }).eq('id', data.id);
-
-      tampilkanSukses(data.id);
+      tampilkanSukses(idPengajuan);
       form.reset();
     } catch (err) {
       tampilkanError(err.message || 'Terjadi kesalahan, silakan coba lagi.');
@@ -47,10 +47,10 @@ export async function init() {
     }
   });
 
-  function validasi(p) {
-    if (!/^\d{16}$/.test(p.nik_pemohon)) throw new Error('NIK harus 16 digit angka.');
-    if (p.nama_pemohon.length < 3) throw new Error('Nama lengkap wajib diisi.');
-    if (!/^0\d{9,13}$/.test(p.no_hp_pemohon)) throw new Error('Nomor WhatsApp tidak valid (mulai dengan 0).');
+  function validasi({ nik, nama, noHp }) {
+    if (!/^\d{16}$/.test(nik)) throw new Error('NIK harus 16 digit angka.');
+    if (nama.length < 3) throw new Error('Nama lengkap wajib diisi.');
+    if (!/^0\d{9,13}$/.test(noHp)) throw new Error('Nomor WhatsApp tidak valid (mulai dengan 0).');
   }
 
   function tampilkanSukses(idPengajuan) {

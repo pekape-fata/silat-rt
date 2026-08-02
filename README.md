@@ -1,58 +1,55 @@
-# Paket Fitur: Undangan Takmir (Prioritas #3)
+# Paket: Perbaikan Bug Ajukan Surat + Widget Jam & Jadwal Sholat Global
 
 ## Isi paket
 
 ```
 supabase/migrations/
-  016_aktifkan_batasi_undangan_lintas_langgar.sql   <- DISARANKAN
-src/pages/undangan/
-  undangan.html
-  undangan.js
-PATCH_router_rbac_whatsapp.txt                       <- WAJIB
+  015_fix_ajukan_surat_publik.sql   <- WAJIB, perbaikan bug RLS
+src/pages/surat/
+  ajukan-surat-publik.js             <- pengganti file lama
+src/lib/
+  jadwalSholatHeader.js              <- widget baru
+PATCH_index_dan_app.txt              <- WAJIB, pasang widget global
 README.md
 ```
 
-## Cara menerapkan
+## 1. Perbaikan bug "new row violates row-level security policy for table surat"
 
-1. Jalankan `016_aktifkan_batasi_undangan_lintas_langgar.sql` di SQL
-   Editor Supabase (lihat penjelasan keamanan di bawah).
-2. Salin folder `src/pages/undangan/` ke repo.
-3. Terapkan `PATCH_router_rbac_whatsapp.txt` (3 bagian).
-4. Halaman ini memakai `cetakSuratTakmirPDF` dari `src/lib/pdf.js`
-   yang sudah dibuat di paket kop surat sebelumnya — pastikan file
-   itu (dan `public/assets/kop/kop-al-muchtarom.png`) sudah ada di
-   repo, kalau belum diterapkan.
+**Penyebab**: proses pengajuan surat publik melakukan INSERT lalu
+UPDATE terpisah sebagai role `anon`. INSERT-nya lolos, tapi UPDATE
+status ke `menunggu_verifikasi` ditolak karena tidak ada policy UPDATE
+yang mengizinkan `anon` (RLS memang sengaja membatasi ini hanya untuk
+Ketua RT/Sekretaris RT/RW).
 
-## Cara kerja
+**Perbaikan**: satu fungsi database `ajukan_surat_publik()` yang
+memvalidasi input lalu menyimpan langsung dengan status akhir
+`menunggu_verifikasi` — tidak ada lagi langkah UPDATE terpisah dari
+sisi client. Sekalian ini menutup celah lama: policy INSERT langsung
+untuk `anon` juga dicabut (diganti fungsi ini), jadi tidak ada lagi
+baris "menggantung" berstatus `draf_publik` yang tidak diverifikasi.
 
-- Sekretaris/Ketua Takmir membuat undangan (judul acara, isi, tanggal)
-  lalu memilih penerima dari daftar warga.
-- **Cetak PDF**: pakai kop Langgar Al Muchtarom, format 1 blok tanda
-  tangan (Ketua Takmir) — mengikuti fungsi yang sudah disiapkan
-  sebelumnya di `pdf.js`.
-- **Kirim via WhatsApp**: membuka tab `wa.me` baru untuk tiap penerima
-  yang punya nomor WA terdaftar (mengikuti pola `lib/whatsapp.js` yang
-  sudah ada — tidak pakai API berbayar, pengurus tetap meninjau pesan
-  sebelum kirim di aplikasi WhatsApp).
+**Cara menerapkan**:
+1. Jalankan `015_fix_ajukan_surat_publik.sql` di SQL Editor Supabase.
+2. Timpa `src/pages/surat/ajukan-surat-publik.js` dengan versi baru.
+3. Coba ajukan surat lagi dari halaman publik — seharusnya berhasil.
 
-## Keamanan
+## 2. Widget Jam & Jadwal Sholat Global
 
-Migrasi 016 mengaktifkan pembatasan scope per-langgar untuk tabel
-`surat_undangan` & `undangan_penerima` (sebelumnya di migrasi 013
-sengaja dibiarkan opsional/tidak aktif karena fiturnya belum ada
-buktinya di kode). Sekarang setelah fitur ini nyata dipakai per-satu-
-langgar (pola identik dengan Kas Takmir), pembatasan ini aman dan
-disarankan — supaya daftar penerima undangan (nama warga yang
-diundang ke acara apa) tidak terlihat oleh pengurus langgar lain.
+Tampil di **semua halaman** (login, beranda publik, dan semua menu
+untuk semua role setelah login) sebagai bar tipis di paling atas —
+dipasang sekali di `index.html` (di luar area yang diganti-ganti
+router), bukan ditempel satu-satu ke tiap halaman.
 
-## Keterbatasan saat ini (di luar cakupan paket ini)
+**Cara menerapkan**:
+1. Salin `src/lib/jadwalSholatHeader.js` ke repo.
+2. Ikuti `PATCH_index_dan_app.txt` (3 bagian: `index.html`,
+   `components.css`, `app.js`).
+3. **Prasyarat**: migrasi `014_public_select_langgar.sql` (dari paket
+   fitur jadwal sholat sebelumnya) sudah diterapkan — kalau belum,
+   widget ini juga butuh itu untuk baca koordinat langgar sebagai
+   pengunjung yang belum login.
 
-- **Belum ada QR verifikasi** untuk undangan (tabel
-  `qr_verifikasi_undangan` sudah ada di skema, tapi belum ada kode
-  yang generate/scan QR-nya — sama seperti QR verifikasi surat yang
-  juga belum diimplementasikan). Bisa jadi pengembangan lanjutan
-  kalau dibutuhkan.
-- Daftar penerima memilih dari SELURUH warga yang terlihat sesuai RLS
-  `warga_select_scope` (berbasis RT, bukan langgar) — asumsi warga
-  target undangan adalah warga di RT yang sama dengan wilayah langgar.
-  Kalau jamaah langgar ternyata lintas-RT, perlu penyesuaian query.
+Widget ini terpisah dari halaman `/beranda-publik` (yang menampilkan
+jadwal lengkap + bisa pilih tanggal) — widget global ini hanya
+ringkasan: jam berjalan + waktu sholat berikutnya beserta hitung
+mundur, cukup untuk selalu terlihat tanpa memakan banyak tempat.

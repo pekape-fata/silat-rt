@@ -1,0 +1,54 @@
+=== PATCH 1: index.html ===
+
+Tambahkan satu <div> BARU tepat SEBELUM <div id="app-outlet">, jadi:
+
+  <div id="global-jadwal-bar" class="global-jadwal-bar"></div>
+  <div id="app-outlet"><!-- Halaman aktif dirender router.js di sini --></div>
+
+(Diletakkan di luar #app-outlet supaya TIDAK ikut tertimpa/hilang
+saat router.js mengganti isi halaman tiap navigasi — jadi benar-benar
+selalu ada di semua halaman, termasuk sebelum login.)
+
+
+=== PATCH 2: src/assets/css/components.css ===
+
+Tambahkan style berikut (menyesuaikan token warna yang sudah ada):
+
+.global-jadwal-bar {
+  position: sticky;
+  top: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 4px 12px;
+  font-size: 12px;
+  background: var(--color-primary-600);
+  color: #fff;
+}
+.global-jadwal-bar .gjb-sep { opacity: .6; }
+
+
+=== PATCH 3: src/app.js ===
+
+Tambahkan import di baris paling atas:
+
+  import { initJadwalSholatHeader } from './lib/jadwalSholatHeader.js';
+
+Lalu panggil sekali setelah baris `import './router.js';` (di luar
+fungsi mana pun, langsung di top-level module — cukup dipanggil satu
+kali karena elemen #global-jadwal-bar tidak pernah dibuat ulang):
+
+  initJadwalSholatHeader('global-jadwal-bar');
+
+=== TIDAK PERLU MENYENTUH router.js ===
+Karena widget dipasang di luar #app-outlet, TIDAK perlu menambahkan
+apa pun ke renderShell() atau ke halaman publik satu-satu (login,
+beranda-publik, ajukan-surat, verifikasi-surat) — otomatis tampil di
+semua halaman tanpa perubahan tambahan di sana.
+
+=== PRASYARAT ===
+Butuh migrasi 014_public_select_langgar.sql (dari paket fitur jadwal
+sholat sebelumnya) sudah diterapkan — widget ini membaca koordinat
+langgar sebagai role anon juga (bisa dipakai sebelum login).
