@@ -1,0 +1,73 @@
+=== PATCH 1: src/pages/dashboard/dashboard-pengurus.html ===
+
+Tambahkan kartu baru TEPAT SETELAH baris `<!-- Kartu statistik keuangan ... -->` / `<div id="dash-stat-grid">`, SEBELUM kartu "Tren Keuangan":
+
+  <!-- Notifikasi surat yang butuh tindakan (Sekretaris RT / Ketua RT / RW) -->
+  <a href="#" id="dash-surat-card" class="card card-body mb-3 card-hover" style="display:none; text-decoration:none; border-left:4px solid var(--color-secondary);">
+    <div class="d-flex align-items-center gap-2">
+      <div style="font-size:22px;">📨</div>
+      <div class="flex-fill">
+        <div class="fw-bold" id="dash-surat-judul" style="color:var(--color-text-primary);">Ada surat menunggu tindakan</div>
+        <div class="text-caption" id="dash-surat-sub"></div>
+      </div>
+      <div style="font-size:18px;color:var(--color-text-muted);">›</div>
+    </div>
+  </a>
+
+
+=== PATCH 2: src/pages/dashboard/dashboard-pengurus.js ===
+
+1. Tambahkan pemanggilan fungsi baru di akhir `init()` (sebelum
+   `renderAgenda();`):
+
+  await renderNotifikasiSurat(profile.role);
+
+2. Tambahkan fungsi baru ini di mana saja di file (mis. setelah
+   fungsi `renderTransaksiTerbaru`):
+
+  async function renderNotifikasiSurat(role) {
+    // Setiap tahap alur surat butuh role berbeda untuk bertindak
+    // (sinkron dengan SURAT_WORKFLOW_ROLE di rbac.js / RLS migrasi 007).
+    const TAHAP = {
+      'Sekretaris RT': { status: 'menunggu_verifikasi', href: '#/antrian-surat', label: 'menunggu diverifikasi' },
+      'Ketua RT':      { status: 'terverifikasi_sekretaris_rt', href: '#/preview-surat', label: 'menunggu tanda tangan Anda' },
+      'Ketua RW':      { status: 'ditandatangani_rt', href: '#/approval-surat', label: 'menunggu tindakan RW' },
+      'Sekretaris RW': { status: 'ditandatangani_rt', href: '#/approval-surat', label: 'menunggu tindakan RW' },
+    };
+    const tahap = TAHAP[role];
+    const card = document.getElementById('dash-surat-card');
+    if (!tahap) { card.style.display = 'none'; return; }
+
+    const { count, error } = await supabase
+      .from('surat')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', tahap.status);
+
+    if (error || !count) { card.style.display = 'none'; return; }
+
+    document.getElementById('dash-surat-judul').textContent = `${count} surat ${tahap.label}`;
+    document.getElementById('dash-surat-sub').textContent = 'Ketuk untuk membuka';
+    card.href = tahap.href;
+    card.style.display = 'flex';
+  }
+
+3. (Untuk Administrator, yang bisa bertindak di semua tahap) —
+   tambahkan baris ini di dalam objek TAHAP di atas kalau ingin
+   Admin juga melihat notifikasi gabungan:
+
+  'Administrator': { status: 'menunggu_verifikasi', href: '#/antrian-surat', label: 'menunggu diverifikasi (tahap Sekretaris RT)' },
+
+   (Admin sebenarnya bisa bertindak di semua tahap — kalau perlu
+   notifikasi gabungan semua tahap untuk Admin, beri tahu saya, saya
+   buatkan query terpisah yang menjumlahkan semua status pending.)
+
+
+=== CATATAN ===
+Ini pakai query count langsung (real-time tiap dashboard dibuka),
+BUKAN sistem notifikasi terpisah (tabel `notifikasi_surat` yang sudah
+ada di skema tapi belum dipakai kode manapun). Pendekatan ini lebih
+sederhana dan tidak butuh migrasi SQL sama sekali — cukup dibuka
+dashboard-nya, langsung akurat. Kalau ke depan mau notifikasi push
+(mis. muncul meski tidak buka dashboard, atau lewat WhatsApp otomatis
+saat ada surat baru), itu perlu pendekatan berbeda (Edge Function +
+webhook) — beri tahu saya kalau itu yang dibutuhkan.
