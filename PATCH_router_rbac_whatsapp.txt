@@ -1,0 +1,50 @@
+=== PATCH 1: src/router.js ===
+
+Tambahkan rute baru di object `routes`:
+
+  '/undangan': {
+    html: '/src/pages/undangan/undangan.html',
+    js: '/src/pages/undangan/undangan.js',
+    roles: ['Sekretaris Takmir', 'Ketua Takmir', 'Bendahara Takmir', 'Administrator'],
+  },
+
+
+=== PATCH 2: src/lib/rbac.js ===
+
+1. Tambahkan `route` ke NAV_ITEM_META untuk key 'undangan' — dari:
+
+  'undangan':       { icon: ICON.mail, label: 'Undangan' },
+
+Menjadi:
+
+  'undangan':       { icon: ICON.mail, label: 'Undangan', route: '/undangan' },
+
+2. Tambahkan entri baru ke CAPABILITIES (sebelum baris penutup `};`):
+
+  undangan: {
+    // Sesuai RLS "undangan_write_takmir" — Bendahara Takmir sengaja
+    // TIDAK termasuk (hanya baca/lihat kalender acara).
+    write: ['Sekretaris Takmir', 'Ketua Takmir', 'Administrator'],
+  },
+
+
+=== PATCH 3: src/lib/whatsapp.js ===
+
+Tambahkan fungsi template baru di akhir file (opsional — halaman
+undangan.js sudah menyusun pesan sendiri secara inline, ini kalau
+mau dipakai terpisah/dipakai ulang di tempat lain):
+
+  export function templateUndangan({ namaWarga, judulAcara, tanggalFormat, isiUndangan, namaLanggar }) {
+    return (
+      `Assalamu'alaikum ${namaWarga},\n\n` +
+      `Dengan hormat, kami mengundang Bapak/Ibu/Saudara/i untuk hadir pada:\n\n` +
+      `${judulAcara}\nTanggal: ${tanggalFormat}\n\n${isiUndangan || ''}\n\n` +
+      `Terima kasih — Takmir ${namaLanggar}`
+    );
+  }
+
+
+=== CATATAN ===
+Jalankan juga migrasi 016_aktifkan_batasi_undangan_lintas_langgar.sql
+(lihat folder supabase/migrations/ di paket ini) supaya data undangan
+antar-langgar tidak saling terlihat.

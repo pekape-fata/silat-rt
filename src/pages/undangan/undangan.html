@@ -1,0 +1,37 @@
+<!-- src/pages/undangan/undangan.html -->
+<div class="container-compact py-3" style="max-width:640px;">
+  <h1 class="fs-5 fw-bold mb-1" style="font-family:var(--font-display);">Undangan</h1>
+  <div class="text-caption mb-3" id="un-langgar-nama">Langgar</div>
+
+  <div id="un-list"><div class="skeleton" style="height:120px;"></div></div>
+</div>
+
+<button class="fab" id="un-fab" title="Buat Undangan" style="display:none;">+</button>
+
+<div class="modal fade" id="modalBuatUndangan" tabindex="-1">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content" style="border-radius:var(--radius-card);">
+      <div class="modal-header">
+        <h5 class="modal-title fs-6 fw-bold">Buat Undangan</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">Judul Acara</label>
+        <input id="un_judul" type="text" class="form-control mb-3" placeholder="Contoh: Peringatan Maulid Nabi">
+
+        <label class="form-label">Isi Undangan</label>
+        <textarea id="un_isi" class="form-control mb-3" rows="4" placeholder="Dengan hormat mengundang Bapak/Ibu/Saudara/i untuk hadir pada..."></textarea>
+
+        <label class="form-label">Tanggal Acara</label>
+        <input id="un_tanggal" type="date" class="form-control mb-3">
+
+        <label class="form-label">Penerima Undangan</label>
+        <div class="text-caption mb-1">Pilih warga yang akan diundang</div>
+        <div id="un-list-warga" style="max-height:220px; overflow-y:auto; border:1px solid var(--color-border,#eee); border-radius:var(--radius-sm); padding:8px;"></div>
+      </div>
+      <div class="modal-footer">
+        <button id="un-btn-simpan" class="btn btn-primary w-100">Simpan sebagai Draf</button>
+      </div>
+    </div>
+  </div>
+</div>
