@@ -1,0 +1,40 @@
+--- PATCH: src/pages/surat/preview-surat.js ---
+
+Ganti fungsi `cetak()` (sekitar baris 72) dari:
+
+function cetak() {
+  cetakSuratPDF({
+    ...surat,
+    jenis_surat_nama: surat.jenis_surat?.nama_jenis,
+    tanggal_terbit_format: surat.terbit_at ? formatTanggalIndo(surat.terbit_at) : formatTanggalIndo(new Date()),
+    nama_penandatangan_rt: 'Ketua RT 01',
+    nama_penandatangan_rw: 'Ketua RW 09',
+  });
+}
+
+Menjadi:
+
+async function cetak() {
+  const btn = document.getElementById('btn-cetak');
+  const labelAsli = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Menyiapkan PDF...';
+  try {
+    await cetakSuratPDF({
+      ...surat,
+      jenis_surat_nama: surat.jenis_surat?.nama_jenis,
+      tanggal_terbit_format: surat.terbit_at ? formatTanggalIndo(surat.terbit_at) : formatTanggalIndo(new Date()),
+      nama_penandatangan_rt: 'Ketua RT 01',
+      nama_penandatangan_rw: 'Ketua RW 09',
+    });
+  } catch (err) {
+    alert('Gagal mencetak surat: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = labelAsli;
+  }
+}
+
+Tidak ada baris lain di file ini yang perlu berubah — pemasangan
+event listener (baris 20) tetap sama karena addEventListener
+menerima fungsi async tanpa masalah.
