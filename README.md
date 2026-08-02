@@ -1,46 +1,52 @@
-# Paket Update Kop Surat — SILAT RT
+# Paket Fitur: Info & Pengumuman (Pengumuman / Surat Edaran / Himbauan)
+
+Prioritas #1 dari 3 fitur yang direncanakan (Pengumuman, Jadwal Sholat,
+Undangan) — dipilih lebih dulu karena skema database & RLS-nya sudah
+lengkap sejak awal, jadi paling cepat memberi manfaat dengan effort
+paling kecil.
 
 ## Isi paket
 
 ```
-public/assets/kop/
-  kop-rt-001-rw-009.png     <- dari file yang Anda kirim
-  kop-al-muchtarom.png      <- dari file yang Anda kirim
-src/lib/pdf.js               <- pengganti file lama, siap timpa langsung
-PATCH_preview-surat.js.txt   <- perubahan kecil yang WAJIB ikut diterapkan
-CONTOH_TEMPLATE_SURAT.md     <- 2 contoh templat isi surat untuk didiskusikan
-README.md                    <- file ini
+src/pages/pengumuman/
+  pengumuman.html
+  pengumuman.js
+PATCH_router_dan_rbac.txt   <- WAJIB diterapkan agar halaman terhubung
+README.md
 ```
 
 ## Cara menerapkan
 
-1. **Salin folder `public/assets/kop/`** ke lokasi yang sama di repo Anda
-   (folder `assets/` belum ada di `public/` sebelumnya, jadi ini folder baru).
-2. **Timpa `src/lib/pdf.js`** dengan file di paket ini.
-3. **Terapkan `PATCH_preview-surat.js.txt`** ke `src/pages/surat/preview-surat.js`
-   — ini WAJIB, karena `cetakSuratPDF` sekarang `async` (perlu menunggu
-   gambar kop selesai dimuat sebelum PDF disimpan). Tanpa patch ini,
-   PDF yang diunduh bisa saja tersimpan sebelum kop-nya sempat tertempel.
-4. Jalankan `vercel dev` / build seperti biasa, lalu coba cetak satu
-   surat untuk memastikan kop tampil dengan benar.
+1. Salin folder `src/pages/pengumuman/` ke lokasi yang sama di repo.
+2. Ikuti `PATCH_router_dan_rbac.txt` untuk menghubungkan rute ke
+   `src/router.js` dan `src/lib/rbac.js`.
+3. Tidak perlu migrasi SQL baru — tabel `pengumuman` sudah ada.
+4. Login sebagai role yang punya akses `write` pengumuman (Ketua RT,
+   Sekretaris RT, PKK RT, Ketua/Sekretaris/Bendahara RW, Ketua/
+   Sekretaris/Bendahara Takmir, atau Administrator) untuk melihat
+   tombol "+".
 
-## Apa yang berubah
+## Cara kerja
 
-- Kop surat sebelumnya digambar manual pakai teks (`doc.text(...)`)
-  yang hardcode "PEMERINTAH KOTA MALANG" dst. Sekarang memakai gambar
-  kop asli yang Anda kirim, ditempel dengan `doc.addImage()`.
-- Ditambahkan fungsi baru `cetakSuratTakmirPDF()` khusus untuk surat/
-  undangan terbitan Langgar Al Muchtarom — belum dipakai di UI manapun
-  karena fitur undangan belum dibangun, tapi sudah siap dipanggil nanti.
-- Ada fallback teks kalau gambar kop gagal dimuat (mis. file belum
-  ter-deploy), supaya proses cetak tidak berhenti total.
+Satu tabel `pengumuman` dipakai untuk 3 kebutuhan sekaligus
+(Pengumuman/Surat Edaran/Himbauan) — dibedakan lewat pilihan "Jenis"
+di form, yang disematkan sebagai prefix pada judul (mis. "[Surat
+Edaran] Jadwal Kerja Bakti"). Kalau nanti perlu filter per jenis di
+level database (bukan cuma tampilan), tinggal tambah kolom
+`jenis varchar(20)` lewat migrasi kecil — tidak perlu ubah struktur
+besar.
 
-## Soal gaya bahasa template surat
+Warga & semua pengurus (siapa pun yang login) bisa membaca pengumuman
+sesuai RLS `pengumuman_select_authenticated`. Yang boleh menulis
+diatur oleh `CAPABILITIES.pengumuman` di `rbac.js` (tampilan) yang
+mencerminkan `pengumuman_write_pengurus` di RLS (penegakan sebenarnya).
 
-`CONTOH_TEMPLATE_SURAT.md` berisi 2 contoh (Surat Keterangan Domisili
-& Surat Keterangan Tidak Mampu) dengan gaya yang lebih sederhana
-dari surat dinas pemerintahan tapi tetap baku dan layak dipakai untuk
-keperluan administratif. Kolom `template_konten` di tabel `jenis_surat`
-saat ini kosong untuk semua 13 jenis surat — jadi begitu gaya di 2
-contoh ini dikonfirmasi cocok, saya bisa lanjutkan sekaligus untuk
-11 jenis surat lainnya plus siapkan SQL `update`-nya.
+## Langkah berikutnya
+
+Sesuai urutan prioritas sebelumnya:
+2. **Jadwal Sholat Sepanjang Masa** (tabel `jadwal_sholat_cache` sudah
+   ada, tinggal UI + fetch dari Aladhan API kalau data kosong)
+3. **Undangan Takmir** (paling kompleks — akan pakai kop Langgar Al
+   Muchtarom yang sudah disiapkan sebelumnya)
+
+Beri tahu saya kapan mau lanjut ke fitur berikutnya.

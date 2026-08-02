@@ -1,0 +1,48 @@
+=== PATCH 1: src/router.js ===
+
+Tambahkan satu baris rute baru di object `routes` (boleh diletakkan
+setelah rute '/keuangan-takmir'):
+
+  '/pengumuman': {
+    html: '/src/pages/pengumuman/pengumuman.html',
+    js: '/src/pages/pengumuman/pengumuman.js',
+    public: false,
+  },
+
+(public: false artinya wajib login, tapi TIDAK dibatasi role tertentu
+di router — karena semua role termasuk Warga boleh membaca info. RLS
+tabel pengumuman sudah menegakkan siapa boleh SELECT (semua yang
+login) dan siapa boleh INSERT (lihat CAPABILITIES.pengumuman di
+rbac.js) — halaman ini cukup mengikuti canManage() untuk menampilkan/
+menyembunyikan tombol "+".)
+
+
+=== PATCH 2: src/lib/rbac.js ===
+
+1. Ubah baris NAV_ITEM_META untuk key 'pengumuman' — dari:
+
+  'pengumuman':     { icon: ICON.megaphone, label: 'Info' },
+
+Menjadi (tambahkan `route`):
+
+  'pengumuman':     { icon: ICON.megaphone, label: 'Info', route: '/pengumuman' },
+
+2. Hapus entri 'Info' dari ROADMAP_INFO (karena sekarang sudah
+   dibangun, bukan lagi "Direncanakan") — hapus baris:
+
+  'Info':         { fase: 'Direncanakan', desc: 'Papan pengumuman resmi dari pengurus RT/RW/Takmir.' },
+
+3. (Opsional, kalau mau Sekretaris RT/RW/Takmir langsung punya akses
+   cepat lewat bottom-nav, bukan cuma lewat menu "Lainnya") — tambahkan
+   'pengumuman' ke NAV_BY_ROLE untuk role yang sering memakainya, mis.:
+
+  'Sekretaris RT':     [ 'beranda', 'warga', 'surat', 'agenda', 'pengumuman', 'lainnya' ],
+
+   Baris lain di NAV_BY_ROLE yang sudah memuat 'pengumuman' (PKK RT,
+   Warga) tidak perlu diubah — sudah otomatis terhubung begitu
+   `route` ditambahkan di langkah 1.
+
+
+=== CATATAN ===
+Tidak ada migrasi SQL baru yang diperlukan — tabel `pengumuman` dan
+RLS-nya sudah lengkap sejak 001_schema.sql / 002_rls_policies.sql.

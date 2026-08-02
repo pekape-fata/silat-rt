@@ -1,0 +1,54 @@
+<!-- src/pages/pengumuman/pengumuman.html -->
+<div class="container-compact py-3" style="max-width:640px;">
+  <h1 class="fs-5 fw-bold mb-1" style="font-family:var(--font-display);">Info & Pengumuman</h1>
+  <div class="text-caption mb-3">Pengumuman, surat edaran, dan himbauan untuk warga</div>
+
+  <div class="chip-row d-flex gap-2 mb-3" id="pg-filter-target" style="overflow-x:auto;">
+    <div class="chip active" data-target="">Semua</div>
+    <div class="chip" data-target="semua_warga">Semua Warga</div>
+    <div class="chip" data-target="pengurus_rt">Pengurus RT</div>
+    <div class="chip" data-target="pengurus_takmir">Pengurus Takmir</div>
+    <div class="chip" data-target="jamaah_tertentu">Jamaah Tertentu</div>
+  </div>
+
+  <div id="pg-list"><div class="skeleton" style="height:120px;"></div></div>
+</div>
+
+<button class="fab" id="pg-fab" title="Buat Pengumuman" style="display:none;">+</button>
+
+<div class="modal fade" id="modalBuatPengumuman" tabindex="-1">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content" style="border-radius:var(--radius-card);">
+      <div class="modal-header">
+        <h5 class="modal-title fs-6 fw-bold">Buat Pengumuman</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">Jenis</label>
+        <select id="pg_jenis" class="form-select mb-3">
+          <option value="Pengumuman">Pengumuman</option>
+          <option value="Surat Edaran">Surat Edaran</option>
+          <option value="Himbauan">Himbauan</option>
+        </select>
+
+        <label class="form-label">Judul</label>
+        <input id="pg_judul" type="text" class="form-control mb-3" placeholder="Contoh: Jadwal Kerja Bakti Bulanan">
+
+        <label class="form-label">Isi</label>
+        <textarea id="pg_isi" class="form-control mb-3" rows="5" placeholder="Tuliskan isi pengumuman di sini..."></textarea>
+
+        <label class="form-label">Ditujukan untuk</label>
+        <select id="pg_target" class="form-select mb-2">
+          <option value="semua_warga">Semua Warga</option>
+          <option value="pengurus_rt">Pengurus RT</option>
+          <option value="pengurus_takmir">Pengurus Takmir</option>
+          <option value="jamaah_tertentu">Jamaah Tertentu</option>
+        </select>
+        <div class="form-text">Menentukan siapa yang melihat pengumuman ini di halaman mereka.</div>
+      </div>
+      <div class="modal-footer">
+        <button id="pg-btn-simpan" class="btn btn-primary w-100">Terbitkan</button>
+      </div>
+    </div>
+  </div>
+</div>
