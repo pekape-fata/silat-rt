@@ -3,6 +3,12 @@
 // Entry point: init tema, service worker, dan router.
 // =========================================================
 import './router.js';
+import { initJadwalSholatHeader } from './lib/jadwalSholatHeader.js';
+
+// Widget global "Jam & Waktu Sholat" — tampil di semua halaman
+// (elemen host #global-jam-bar ada di index.html, di luar #app-outlet
+// supaya tidak ikut hilang saat router berpindah halaman).
+initJadwalSholatHeader('global-jam-bar');
 
 // Tema tersimpan per sesi (bukan localStorage browser biasa, tapi
 // preferensi tema disinkron ke public.users pada implementasi penuh)

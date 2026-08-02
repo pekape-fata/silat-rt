@@ -1,48 +1,55 @@
-# Paket: Notifikasi Surat Menunggu Tindakan (Dashboard)
-
-## Kenapa ini dibutuhkan
-
-Surat yang Anda ajukan lewat halaman publik **sudah tersimpan dengan
-benar** (ID `11f86f49`, status `menunggu_verifikasi`) — bug RLS
-sebelumnya sudah beres. Yang hilang murni fitur: `antrian-surat.js`
-hanya memuat data sekali saat halaman dibuka, tidak ada indikator apa
-pun di dashboard/menu lain yang memberi tahu Sekretaris RT bahwa ada
-pengajuan baru menunggu.
+# Paket: Perbaikan Bug Ajukan Surat + Widget Jam & Jadwal Sholat Global
 
 ## Isi paket
 
 ```
-PATCH_dashboard_notifikasi_surat.txt   <- WAJIB
+supabase/migrations/
+  015_fix_ajukan_surat_publik.sql   <- WAJIB, perbaikan bug RLS
+src/pages/surat/
+  ajukan-surat-publik.js             <- pengganti file lama
+src/lib/
+  jadwalSholatHeader.js              <- widget baru
+PATCH_index_dan_app.txt              <- WAJIB, pasang widget global
 README.md
 ```
 
-## Cara menerapkan
+## 1. Perbaikan bug "new row violates row-level security policy for table surat"
 
-Ikuti `PATCH_dashboard_notifikasi_surat.txt` (2 bagian: HTML + JS).
-Tidak perlu migrasi SQL apa pun.
+**Penyebab**: proses pengajuan surat publik melakukan INSERT lalu
+UPDATE terpisah sebagai role `anon`. INSERT-nya lolos, tapi UPDATE
+status ke `menunggu_verifikasi` ditolak karena tidak ada policy UPDATE
+yang mengizinkan `anon` (RLS memang sengaja membatasi ini hanya untuk
+Ketua RT/Sekretaris RT/RW).
 
-## Cara kerja
+**Perbaikan**: satu fungsi database `ajukan_surat_publik()` yang
+memvalidasi input lalu menyimpan langsung dengan status akhir
+`menunggu_verifikasi` — tidak ada lagi langkah UPDATE terpisah dari
+sisi client. Sekalian ini menutup celah lama: policy INSERT langsung
+untuk `anon` juga dicabut (diganti fungsi ini), jadi tidak ada lagi
+baris "menggantung" berstatus `draf_publik` yang tidak diverifikasi.
 
-Kartu baru muncul di paling atas dashboard (di bawah salam,
-sebelum grafik keuangan), khusus untuk role yang punya tahap aktif
-menunggu tindakan:
+**Cara menerapkan**:
+1. Jalankan `015_fix_ajukan_surat_publik.sql` di SQL Editor Supabase.
+2. Timpa `src/pages/surat/ajukan-surat-publik.js` dengan versi baru.
+3. Coba ajukan surat lagi dari halaman publik — seharusnya berhasil.
 
-| Role | Dipicu oleh status | Tujuan link |
-|------|---------------------|-------------|
-| Sekretaris RT | `menunggu_verifikasi` | Antrian Surat |
-| Ketua RT | `terverifikasi_sekretaris_rt` | Preview Surat |
-| Ketua RW / Sekretaris RW | `ditandatangani_rt` | Approval Surat |
+## 2. Widget Jam & Jadwal Sholat Global
 
-Kartu otomatis tersembunyi kalau tidak ada surat pending di tahap
-peran tersebut.
+Tampil di **semua halaman** (login, beranda publik, dan semua menu
+untuk semua role setelah login) sebagai bar tipis di paling atas —
+dipasang sekali di `index.html` (di luar area yang diganti-ganti
+router), bukan ditempel satu-satu ke tiap halaman.
 
-## Batasan (silakan beri tahu kalau perlu ditingkatkan)
+**Cara menerapkan**:
+1. Salin `src/lib/jadwalSholatHeader.js` ke repo.
+2. Ikuti `PATCH_index_dan_app.txt` (3 bagian: `index.html`,
+   `components.css`, `app.js`).
+3. **Prasyarat**: migrasi `014_public_select_langgar.sql` (dari paket
+   fitur jadwal sholat sebelumnya) sudah diterapkan — kalau belum,
+   widget ini juga butuh itu untuk baca koordinat langgar sebagai
+   pengunjung yang belum login.
 
-Ini notifikasi "tarik" (pull) — akurat begitu dashboard dibuka, tapi
-BUKAN notifikasi push (tidak akan muncul pop-up/WA otomatis kalau
-Sekretaris RT sedang tidak membuka aplikasi). Kalau butuh notifikasi
-yang benar-benar real-time/push, itu perlu pendekatan tambahan
-(Supabase Realtime subscription untuk badge langsung update tanpa
-refresh, atau Edge Function + WhatsApp API untuk kirim pesan otomatis
-saat ada surat baru) — beri tahu saya kalau ini yang dibutuhkan
-berikutnya.
+Widget ini terpisah dari halaman `/beranda-publik` (yang menampilkan
+jadwal lengkap + bisa pilih tanggal) — widget global ini hanya
+ringkasan: jam berjalan + waktu sholat berikutnya beserta hitung
+mundur, cukup untuk selalu terlihat tanpa memakan banyak tempat.

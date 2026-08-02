@@ -7,6 +7,7 @@ import { getCurrentProfile, logout } from './lib/auth.js';
 import { getNavForRole, NAV_ITEM_META } from './lib/rbac.js';
 
 const routes = {
+  '/beranda-publik': { html: '/src/pages/beranda-publik/beranda-publik.html', js: '/src/pages/beranda-publik/beranda-publik.js', public: true },
   '/login': { html: '/src/pages/auth/login.html', js: '/src/pages/auth/login.js', public: true },
   '/ajukan-surat': { html: '/src/pages/surat/ajukan-surat-publik.html', js: '/src/pages/surat/ajukan-surat-publik.js', public: true },
   '/verifikasi-surat': { html: '/src/pages/surat/verifikasi-surat.html', js: '/src/pages/surat/verifikasi-surat.js', public: true },
@@ -125,9 +126,9 @@ function renderShell(profile, activeRoutePath) {
 }
 
 export async function renderRoute() {
-  const path = (location.hash.replace('#', '') || '/login');
+  const path = (location.hash.replace('#', '') || '/beranda-publik');
   const [routePath, query] = path.split('?');
-  const route = routes[routePath] || routes['/login'];
+  const route = routes[routePath] || routes['/beranda-publik'];
 
   let profile = null;
   if (!route.public) {
