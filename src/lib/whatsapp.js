@@ -30,7 +30,16 @@ export function templatePerluPerbaikan({ namaPemohon, jenisSurat, catatan, linkP
 export function templateSuratTerbit({ namaPemohon, jenisSurat, nomorSurat, linkUnduh }) {
   return (
     `Assalamu'alaikum ${namaPemohon},\n\n` +
-    `${jenisSurat} Anda (No. ${nomorSurat}) sudah terbit dan siap diunduh:\n${linkUnduh}\n\n` +
+    `${jenisSurat} Anda (No. ${nomorSurat}) sudah terbit dan siap diambil/dicetak.\n` +
+    (linkUnduh ? `Info lebih lanjut: ${linkUnduh}\n\n` : '\n') +
+    `Terima kasih — Sekretariat RT 01/RW 09 Purwantoro`
+  );
+}
+
+export function templateSuratDibuatSekretaris({ namaPemohon, jenisSurat }) {
+  return (
+    `Assalamu'alaikum ${namaPemohon},\n\n` +
+    `Pengajuan ${jenisSurat} Anda telah kami catat di Sekretariat RT dan sedang diproses.\n\n` +
     `Terima kasih — Sekretariat RT 01/RW 09 Purwantoro`
   );
 }

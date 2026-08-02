@@ -68,7 +68,7 @@ function hitungJadwalHariIni() {
 
 function tick(el) {
   const sekarang = new Date();
-  document.getElementById('gjb-jam').textContent = sekarang.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  document.getElementById('gjb-jam').textContent = sekarang.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WIB';
 
   const sholatEl = document.getElementById('gjb-sholat');
   const jadwal = hitungJadwalHariIni();

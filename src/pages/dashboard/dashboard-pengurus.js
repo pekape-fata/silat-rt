@@ -37,8 +37,35 @@ export async function init() {
     renderTransaksiTerbaru({ hasRT, hasTakmir });
   }
 
+  await renderNotifikasiSurat(profile.role);
   renderAgenda();
   renderPengumuman();
+}
+
+async function renderNotifikasiSurat(role) {
+  // Setiap tahap alur surat butuh role berbeda untuk bertindak
+  // (sinkron dengan SURAT_WORKFLOW_ROLE di rbac.js / RLS migrasi 007).
+  const TAHAP = {
+    'Sekretaris RT': { status: 'menunggu_verifikasi', href: '#/antrian-surat', label: 'menunggu diverifikasi' },
+    'Ketua RT':      { status: 'terverifikasi_sekretaris_rt', href: '#/preview-surat', label: 'menunggu tanda tangan Anda' },
+    'Ketua RW':      { status: 'ditandatangani_rt', href: '#/approval-surat', label: 'menunggu tindakan RW' },
+    'Sekretaris RW': { status: 'ditandatangani_rt', href: '#/approval-surat', label: 'menunggu tindakan RW' },
+  };
+  const tahap = TAHAP[role];
+  const card = document.getElementById('dash-surat-card');
+  if (!tahap) { card.style.display = 'none'; return; }
+
+  const { count, error } = await supabase
+    .from('surat')
+    .select('id', { count: 'exact', head: true })
+    .eq('status', tahap.status);
+
+  if (error || !count) { card.style.display = 'none'; return; }
+
+  document.getElementById('dash-surat-judul').textContent = `${count} surat ${tahap.label}`;
+  document.getElementById('dash-surat-sub').textContent = 'Ketuk untuk membuka';
+  card.href = tahap.href;
+  card.style.display = 'flex';
 }
 
 function greet(profile) {

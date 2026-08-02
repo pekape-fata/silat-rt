@@ -25,6 +25,16 @@ const routes = {
     js: '/src/pages/keuangan-takmir/keuangan-takmir.js',
     roles: ['Bendahara Takmir', 'Ketua Takmir', 'Sekretaris Takmir', 'Administrator'],
   },
+  '/pengumuman': {
+    html: '/src/pages/pengumuman/pengumuman.html',
+    js: '/src/pages/pengumuman/pengumuman.js',
+    public: false,
+  },
+  '/undangan': {
+    html: '/src/pages/undangan/undangan.html',
+    js: '/src/pages/undangan/undangan.js',
+    roles: ['Sekretaris Takmir', 'Ketua Takmir', 'Bendahara Takmir', 'Administrator'],
+  },
 };
 
 // Rute hash yang benar-benar sudah dibangun — dipakai untuk memutuskan

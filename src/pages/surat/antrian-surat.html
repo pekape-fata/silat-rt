@@ -1,30 +1,43 @@
 <!-- src/pages/surat/antrian-surat.html -->
 <!-- Khusus Sekretaris RT / Administrator (dijaga router.js + RLS) -->
 <div class="container py-3" style="max-width:520px;">
-  <h1 class="fs-5 fw-bold mb-3" style="font-family:var(--font-display);">Antrian Verifikasi Surat</h1>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="fs-5 fw-bold mb-0" style="font-family:var(--font-display);">Antrian Verifikasi Surat</h1>
+    <button type="button" id="btn-tambah-surat" class="btn btn-primary btn-sm">+ Tambah Surat</button>
+  </div>
   <div id="daftar-antrian" class="d-flex flex-column gap-2"></div>
 
-  <!-- Modal edit/verifikasi -->
+  <!-- Modal tambah/edit/verifikasi -->
   <div class="modal fade" id="modalVerifikasi" tabindex="-1">
     <div class="modal-dialog modal-dialog-scrollable">
       <div class="modal-content" style="border-radius:var(--radius-card);">
         <div class="modal-header">
-          <h5 class="modal-title fs-6 fw-bold">Verifikasi Pengajuan</h5>
+          <h5 class="modal-title fs-6 fw-bold" id="modalVerifikasiTitle">Verifikasi Pengajuan</h5>
           <button class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
+          <div id="wrap_jenis_surat" class="mb-3">
+            <div class="mb-2 small text-muted">Jenis Surat</div>
+            <select id="edit_jenis_surat" class="form-select"></select>
+          </div>
           <div class="mb-2 small text-muted">NIK</div>
           <input id="edit_nik" class="form-control mb-3">
           <div class="mb-2 small text-muted">Nama Pemohon</div>
           <input id="edit_nama" class="form-control mb-3">
+          <div class="mb-2 small text-muted">Nomor WhatsApp Pemohon</div>
+          <input id="edit_no_hp" class="form-control mb-3" placeholder="08xxxxxxxxxx">
           <div class="mb-2 small text-muted">Isi/Keperluan Surat (EDIT sebelum diteruskan)</div>
           <textarea id="edit_isi" class="form-control mb-3" rows="4"></textarea>
-          <div class="mb-2 small text-muted">Catatan Perbaikan (isi hanya jika data belum sesuai)</div>
-          <textarea id="edit_catatan" class="form-control" rows="2" placeholder="Contoh: Foto KTP belum jelas, mohon unggah ulang"></textarea>
+          <div id="wrap_catatan">
+            <div class="mb-2 small text-muted">Catatan Perbaikan (isi hanya jika data belum sesuai)</div>
+            <textarea id="edit_catatan" class="form-control" rows="2" placeholder="Contoh: Foto KTP belum jelas, mohon unggah ulang"></textarea>
+          </div>
         </div>
-        <div class="modal-footer d-flex gap-2">
+        <div class="modal-footer d-flex flex-wrap gap-2">
+          <button id="btn-hapus-surat" class="btn btn-outline-danger btn-sm me-auto">Hapus</button>
           <button id="btn-minta-perbaikan" class="btn btn-outline-danger btn-sm flex-fill">Kirim untuk Diperbaiki</button>
           <button id="btn-simpan-verifikasi" class="btn btn-primary btn-sm flex-fill">Simpan &amp; Teruskan ke Ketua RT</button>
+          <button id="btn-simpan-baru" class="btn btn-primary btn-sm flex-fill d-none">Simpan Surat Baru</button>
         </div>
       </div>
     </div>

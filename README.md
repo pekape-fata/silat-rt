@@ -1,55 +1,37 @@
-# Paket: Perbaikan Bug Ajukan Surat + Widget Jam & Jadwal Sholat Global
+# SILAT RT (Sistem Informasi Langgar dan RT)
 
-## Isi paket
+Aplikasi administrasi terpadu untuk Takmir Langgar/Musala (ibadah, kas,
+jadwal imam, inventaris) dan RT (kependudukan, surat-menyurat, iuran,
+agenda warga). Satu sistem, satu login, satu database — berbasis
+Supabase (database + auth) dan Vercel (hosting), dapat diakses lewat
+browser (PWA) maupun dibungkus jadi APK Android.
+
+Untuk detail lengkap analisis kebutuhan, ERD, dan desain sistem, lihat
+folder `docs/`.
+
+## Menjalankan secara lokal
 
 ```
-supabase/migrations/
-  015_fix_ajukan_surat_publik.sql   <- WAJIB, perbaikan bug RLS
-src/pages/surat/
-  ajukan-surat-publik.js             <- pengganti file lama
-src/lib/
-  jadwalSholatHeader.js              <- widget baru
-PATCH_index_dan_app.txt              <- WAJIB, pasang widget global
-README.md
+vercel dev
 ```
 
-## 1. Perbaikan bug "new row violates row-level security policy for table surat"
+## Struktur migrasi database
 
-**Penyebab**: proses pengajuan surat publik melakukan INSERT lalu
-UPDATE terpisah sebagai role `anon`. INSERT-nya lolos, tapi UPDATE
-status ke `menunggu_verifikasi` ditolak karena tidak ada policy UPDATE
-yang mengizinkan `anon` (RLS memang sengaja membatasi ini hanya untuk
-Ketua RT/Sekretaris RT/RW).
+Migrasi SQL di `supabase/migrations/` dijalankan berurutan sesuai
+nomor filenya lewat Supabase SQL Editor. Migrasi 010 ke atas adalah
+perbaikan keamanan (RLS) dan fitur tambahan yang dikerjakan setelah
+rilis awal — lihat komentar di masing-masing file untuk detail apa
+yang diperbaiki/ditambahkan.
 
-**Perbaikan**: satu fungsi database `ajukan_surat_publik()` yang
-memvalidasi input lalu menyimpan langsung dengan status akhir
-`menunggu_verifikasi` — tidak ada lagi langkah UPDATE terpisah dari
-sisi client. Sekalian ini menutup celah lama: policy INSERT langsung
-untuk `anon` juga dicabut (diganti fungsi ini), jadi tidak ada lagi
-baris "menggantung" berstatus `draf_publik` yang tidak diverifikasi.
+## Fitur utama
 
-**Cara menerapkan**:
-1. Jalankan `015_fix_ajukan_surat_publik.sql` di SQL Editor Supabase.
-2. Timpa `src/pages/surat/ajukan-surat-publik.js` dengan versi baru.
-3. Coba ajukan surat lagi dari halaman publik — seharusnya berhasil.
-
-## 2. Widget Jam & Jadwal Sholat Global
-
-Tampil di **semua halaman** (login, beranda publik, dan semua menu
-untuk semua role setelah login) sebagai bar tipis di paling atas —
-dipasang sekali di `index.html` (di luar area yang diganti-ganti
-router), bukan ditempel satu-satu ke tiap halaman.
-
-**Cara menerapkan**:
-1. Salin `src/lib/jadwalSholatHeader.js` ke repo.
-2. Ikuti `PATCH_index_dan_app.txt` (3 bagian: `index.html`,
-   `components.css`, `app.js`).
-3. **Prasyarat**: migrasi `014_public_select_langgar.sql` (dari paket
-   fitur jadwal sholat sebelumnya) sudah diterapkan — kalau belum,
-   widget ini juga butuh itu untuk baca koordinat langgar sebagai
-   pengunjung yang belum login.
-
-Widget ini terpisah dari halaman `/beranda-publik` (yang menampilkan
-jadwal lengkap + bisa pilih tanggal) — widget global ini hanya
-ringkasan: jam berjalan + waktu sholat berikutnya beserta hitung
-mundur, cukup untuk selalu terlihat tanpa memakan banyak tempat.
+- Manajemen data warga & kartu keluarga (RT)
+- Alur surat pengantar/keterangan berjenjang: Sekretaris RT → Ketua RT
+  → RW, termasuk pengajuan publik tanpa login
+- Kas RT & Kas Takmir (pencatatan, laporan, grafik tren)
+- Info & Pengumuman (pengumuman/surat edaran/himbauan)
+- Undangan Takmir (buat undangan acara, cetak PDF berkop Langgar,
+  kirim via WhatsApp)
+- Jadwal Sholat Sepanjang Masa (halaman depan publik, dihitung dari
+  koordinat langgar, tidak tergantung cache harian)
+- Widget jam & jadwal sholat global di semua halaman

@@ -12,6 +12,18 @@
   <!-- Kartu statistik keuangan (klik untuk masuk ke modul terkait) -->
   <div class="row g-3 mb-1" id="dash-stat-grid"><!-- diisi JS --></div>
 
+  <!-- Notifikasi surat yang butuh tindakan (Sekretaris RT / Ketua RT / RW) -->
+  <a href="#" id="dash-surat-card" class="card card-body mb-3 card-hover" style="display:none; text-decoration:none; border-left:4px solid var(--color-secondary);">
+    <div class="d-flex align-items-center gap-2">
+      <div style="font-size:22px;">📨</div>
+      <div class="flex-fill">
+        <div class="fw-bold" id="dash-surat-judul" style="color:var(--color-text-primary);">Ada surat menunggu tindakan</div>
+        <div class="text-caption" id="dash-surat-sub"></div>
+      </div>
+      <div style="font-size:18px;color:var(--color-text-muted);">›</div>
+    </div>
+  </a>
+
   <!-- Tren pemasukan vs pengeluaran 6 bulan terakhir -->
   <div class="card card-body mb-3" id="dash-chart-card" style="display:none;">
     <h2 class="section-title d-flex justify-content-between align-items-center mb-2">

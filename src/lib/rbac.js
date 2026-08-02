@@ -74,6 +74,11 @@ export const CAPABILITIES = {
     write: ['Ketua RT', 'Sekretaris RT', 'PKK RT', 'Ketua RW', 'Sekretaris RW', 'Bendahara RW',
             'Ketua Takmir', 'Sekretaris Takmir', 'Bendahara Takmir', 'Administrator'],
   },
+  undangan: {
+    // Sesuai RLS "undangan_write_takmir" — Bendahara Takmir sengaja
+    // TIDAK termasuk (hanya baca/lihat kalender acara).
+    write: ['Sekretaris Takmir', 'Ketua Takmir', 'Administrator'],
+  },
 };
 
 export function canManage(module, role) {
@@ -137,12 +142,12 @@ export const NAV_ITEM_META = {
   'laporan-takmir': { icon: ICON.chart, label: 'Laporan', route: '/keuangan-takmir' },
   'langgar':        { icon: ICON.mosque, label: 'Langgar' },
   'jadwal':         { icon: ICON.clock, label: 'Jadwal' },
-  'undangan':       { icon: ICON.mail, label: 'Undangan' },
+  'undangan':       { icon: ICON.mail, label: 'Undangan', route: '/undangan' },
   'tugas':          { icon: ICON.check, label: 'Tugas' },
   'profil':         { icon: ICON.user, label: 'Profil' },
   'surat-saya':     { icon: ICON.doc, label: 'Surat Saya' },
   'agenda':         { icon: ICON.calendar, label: 'Agenda' },
-  'pengumuman':     { icon: ICON.megaphone, label: 'Info' },
+  'pengumuman':     { icon: ICON.megaphone, label: 'Info', route: '/pengumuman' },
   'pengguna':       { icon: ICON.users, label: 'Pengguna' },
   'data':           { icon: ICON.folder, label: 'Data' },
   'sistem':         { icon: ICON.settings, label: 'Sistem' },

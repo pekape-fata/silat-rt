@@ -121,7 +121,12 @@ export async function cetakSuratPDF(surat, opts = {}) {
   }
 
   const fileName = opts.fileName || `${(surat.nomor_surat || 'surat').replace(/\//g, '-')}.pdf`;
-  if (opts.autoDownload !== false) {
+  if (opts.mode === 'print') {
+    // CETAK: buka dialog cetak browser langsung (tanpa memaksa unduh file)
+    doc.autoPrint();
+    window.open(doc.output('bloburl'), '_blank');
+  } else if (opts.autoDownload !== false) {
+    // UNDUH: simpan file PDF langsung ke perangkat
     doc.save(fileName);
   }
   return doc;
