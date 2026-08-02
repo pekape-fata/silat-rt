@@ -1,127 +1,60 @@
-# SILAT RT — Sistem Informasi Langgar dan RT
+# Paket Perbaikan Keamanan SILAT RT (v2 — disesuaikan dengan repo asli)
 
-Aplikasi administrasi terpadu untuk **RT 01 / RW 09, Kelurahan Purwantoro, Kecamatan Blimbing, Kota Malang** dan **Langgar Waqaf Al Muchtarom Pandean 1**.
+Paket ini sudah dicocokkan langsung dengan `silat-rt-main` (skema tabel,
+nama fungsi helper, dan alur kode di `src/`) yang diunggah. Nomor file
+migrasi melanjutkan urutan yang sudah ada di `supabase/migrations/`
+(001-009), jadi tinggal dijalankan setelah migrasi 009.
 
-Stack: HTML5 + CSS3 + JavaScript ES6 (tanpa build tool wajib) + Bootstrap 5 + Supabase (Postgres, Auth, Realtime, Storage, RLS) + Vercel + GitHub. 100% berjalan di free tier.
-
----
-
-## ⚠️ STATUS PENGERJAAN (baca dulu sebelum deploy)
-
-Proyek ini dikerjakan bertahap (13 tahap). Status saat file ini dibuat:
-
-| Tahap | Status |
-|---|---|
-| 1. Analisis Kebutuhan | ✅ Selesai — `docs/01-analisis-kebutuhan.md` |
-| 2. Flowchart | ✅ Selesai — `docs/02-flowchart.md` |
-| 3. Use Case Diagram | ✅ Selesai — `docs/03-usecase.md` |
-| 4. ERD | ✅ Selesai — `docs/04-erd.md` |
-| 5. Struktur Database Supabase | ✅ Selesai — `supabase/migrations/001-005` |
-| 6. UI/UX Seluruh Halaman | ✅ Selesai (design system + 42 halaman site map + mockup 7 layar) — `docs/06a-06c` |
-| 7. Struktur Folder Project | ✅ Selesai |
-| 8. Source Code Frontend | 🟡 **Sebagian** — modul Autentikasi & Surat (alur publik → Sekretaris RT → Ketua RT → Ketua RW) sudah jadi dan fungsional (simpan/edit/cetak). Modul **Warga, Keuangan RT, Keuangan Takmir, Takmir/Langgar, Agenda-Pengumuman, Admin, dan Dashboard belum dibuat** — baru berupa halaman kosong/belum ada. |
-| 9. Source Code Backend (RPC/Edge Function) | ⬜ Belum dikerjakan |
-| 10. SQL Supabase final | 🟡 Sudah ada 5 file migration inti, tapi bisa bertambah seiring modul baru di Tahap 8 dibuat |
-| 11. Deployment GitHub | ⬜ Belum — panduan di bawah, tinggal Anda jalankan |
-| 12. Deployment Vercel | ⬜ Belum — panduan di bawah, tinggal Anda jalankan |
-| 13. Build APK Android | ⬜ Belum dikerjakan |
-
-**Artinya**: paket ini SUDAH BISA di-deploy ke Supabase + GitHub + Vercel sekarang untuk mulai pengujian alur Login dan alur Surat (pengajuan publik → verifikasi → TTD berjenjang → cetak PDF) — tapi modul-modul lain di dashboard belum akan berfungsi karena halamannya belum dibuat. Deploy sekarang tetap disarankan agar Anda bisa mulai menguji sambil modul lain menyusul.
-
----
-
-## 1. SETUP SUPABASE
-
-1. Buat project baru di [supabase.com](https://supabase.com) (free tier).
-2. Buka **SQL Editor**, jalankan file di `supabase/migrations/` **berurutan sesuai nomor**:
-   - `001_schema.sql`
-   - `002_rls_policies.sql`
-   - `003_auth_storage_realtime.sql`
-   - `004_username_login.sql`
-   - `005_alur_rw_pelimpahan.sql`
-3. Buka **Project Settings > API**, catat `Project URL` dan `anon public key`.
-4. Buat akun pengurus pertama (Administrator) secara manual:
-   - Buka **Authentication > Users > Add User**, isi email `admin@silatrt.local` dan password.
-   - Di **Table Editor > users**, ubah `role_id` baris yang baru dibuat ke role `Administrator`, dan isi kolom `username` = `admin`.
-   - Ulangi untuk `ketua.rt`, `sekretaris.rt`, dst — email selalu `{username}@silatrt.local`.
-
----
-
-## 2. SETUP GITHUB
-
-```bash
-cd silat-rt
-git init
-git add .
-git commit -m "Initial commit: SILAT RT Tahap 1-8 (parsial)"
-git branch -M main
-git remote add origin https://github.com/<username-anda>/silat-rt.git
-git push -u origin main
-```
-
-Buat branch `develop` untuk pengembangan modul lanjutan:
-```bash
-git checkout -b develop
-git push -u origin develop
-```
-
-Tambahkan **Repository Secrets** (Settings > Secrets and variables > Actions) agar workflow `.github/workflows/deploy.yml` berjalan:
-- `SUPABASE_URL`
-- `SUPABASE_ANON_KEY`
-
----
-
-## 3. SETUP VERCEL
-
-1. Login ke [vercel.com](https://vercel.com), klik **Add New Project**, import repo GitHub `silat-rt`.
-2. Framework preset: pilih **Other** (project ini statis, tanpa framework).
-3. Build Command: `node scripts/generate-env.js` (sudah diatur di `vercel.json`).
-4. Output Directory: `.` (root).
-5. Tambahkan **Environment Variables**:
-   - `SUPABASE_URL` = URL project Supabase Anda
-   - `SUPABASE_ANON_KEY` = anon public key Supabase Anda
-6. Klik **Deploy**.
-
-Setelah deploy pertama berhasil, setiap `git push` ke `main` akan otomatis re-deploy (default Vercel + GitHub integration).
-
----
-
-## 4. MENJALANKAN SECARA LOKAL (opsional, untuk development)
-
-```bash
-cp .env.example .env       # isi manual, lalu jalankan generate-env
-node scripts/generate-env.js
-npm run dev                 # membuka http://localhost:5173 via `serve`
-```
-
----
-
-## 5. STRUKTUR PROJECT
-
-Lihat `docs/07-struktur-folder.md` untuk penjelasan lengkap tiap folder.
+## Isi paket
 
 ```
-silat-rt/
-├── docs/                  # Seluruh dokumen Tahap 1-7 (analisis s.d. struktur folder)
-├── supabase/migrations/   # 5 file SQL bernomor urut — jalankan berurutan
-├── public/                # PWA: manifest, service worker, env.js (auto-generate di Vercel)
-├── src/
-│   ├── assets/css/        # Design tokens hasil Tahap 6
-│   ├── lib/                # Logika murni: auth, rbac, format, whatsapp, pdf
-│   ├── pages/               # 1 folder = 1 modul (baru "auth" & "surat" yang lengkap)
-│   ├── router.js
-│   └── app.js
-├── scripts/generate-env.js
-├── vercel.json
-├── package.json
-└── index.html
+migrations/
+  010_fix_riwayat_warga_rls.sql              <- WAJIB
+  011_fix_log_aktivitas_audit.sql            <- WAJIB
+  012_fix_trx_takmir_scope.sql               <- WAJIB (terbukti dari kode)
+  013_optional_batasi_undangan_lintas_langgar.sql <- OPSIONAL, belum ada fiturnya
+README.md                                     <- file ini
 ```
 
----
+## Cara menjalankan
 
-## 6. LANGKAH SELANJUTNYA YANG DISARANKAN
+1. Backup database dulu (Supabase Dashboard > Database > Backups).
+2. Buka **SQL Editor**, jalankan **010, 011, 012 secara berurutan** —
+   masing-masing paste seluruh isi file, klik Run.
+3. Verifikasi tiap migrasi sesuai instruksi di bagian bawah filenya.
+4. **013 belum perlu dijalankan** — fitur undangan belum dibangun di
+   kode (`src/pages/`), jadi belum ada risiko aktif. Simpan file ini
+   untuk dipakai nanti begitu fitur undangan mulai dikerjakan.
 
-1. Deploy dulu paket ini (Supabase → GitHub → Vercel) untuk memastikan alur Login & Surat berjalan di lingkungan nyata.
-2. Lanjutkan Tahap 8 untuk modul: Warga, Keuangan RT, Keuangan Takmir, Takmir/Langgar, Agenda-Pengumuman, Admin, Dashboard — mengikuti pola arsitektur yang sama seperti modul Surat (`src/pages/surat/`).
-3. Lanjut ke Tahap 9 (backend/RPC untuk logika lebih kompleks, mis. generate nomor surat otomatis via Postgres function, bukan di frontend).
-4. Tahap 13: bungkus PWA ini jadi APK menggunakan [Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap) (gratis, berbasis Trusted Web Activity) setelah domain Vercel aktif.
+## Ringkasan temuan (v2)
+
+| # | Migrasi | Tabel | Masalah | Status |
+|---|---------|-------|---------|--------|
+| 1 | 010 | `riwayat_warga` | Subquery scope tidak memfilter apa pun — semua user login bisa baca riwayat semua warga lintas RT | 🔴 Wajib |
+| 2 | 011 | `log_aktivitas` | Semua user login boleh INSERT bebas — audit trail bisa dipalsukan | 🔴 Wajib |
+| 3 | 012 | `transaksi_keuangan_takmir` | Klausa `OR auth.role() = 'authenticated'` bikin transaksi semua langgar bocor lintas-langgar. **Dikonfirmasi lewat kode**: dashboard di `keuangan-takmir.js` didesain per-langgar (satu `langgarAktif`) tapi query tidak difilter, murni mengandalkan RLS | 🔴 Wajib |
+| 4 | 013 | `surat_undangan`, `undangan_penerima` | Klausa serupa #3, tapi fitur undangan belum dibangun di UI — belum ada bukti apakah ini bug atau desain yang dituju | 🟡 Tunda, konfirmasi dulu |
+
+## Koreksi dari paket sebelumnya
+
+Paket versi pertama (sebelum saya melihat kode aslinya) salah menebak
+skema kolom tabel `log_aktivitas` — memakai `tabel`/`record_id`/`detail
+jsonb` yang sebenarnya tidak ada. Skema asli (`001_schema.sql`):
+`user_id, aksi varchar(100), modul varchar(50), detail text,
+ip_address varchar(45), created_at`. Migrasi 011 di paket ini sudah
+disesuaikan dan siap dijalankan langsung tanpa error.
+
+## Checklist keamanan lanjutan (di luar isi paket ini)
+
+- [ ] Pastikan `service_role` key Supabase tidak pernah ikut ter-bundle
+      ke kode frontend — cek `src/lib/supabaseClient.js` dan
+      `.env.example` hanya memuat `anon` key.
+- [ ] Endpoint pengajuan surat tanpa login (`surat_public_insert`,
+      dipakai di `src/pages/surat/ajukan-surat-publik.js`) menerima
+      NIK/nama/no HP pemohon tanpa verifikasi — pertimbangkan rate
+      limiting per IP dan/atau verifikasi OTP sebelum status keluar
+      dari `draf_publik`.
+- [ ] Terapkan masking NIK/KK di tampilan UI untuk peran yang tidak
+      perlu melihat nomor penuh.
+- [ ] Siapkan draf kebijakan privasi sesuai UU PDP sebelum aplikasi
+      dipublikasikan lebih luas ke warga.
