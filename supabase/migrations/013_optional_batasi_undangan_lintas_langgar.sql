@@ -1,0 +1,47 @@
+-- =========================================================
+-- SILAT RT — 013_optional_batasi_undangan_lintas_langgar.sql
+-- JANGAN JALANKAN SEBELUM DIKONFIRMASI KE PENGURUS TAKMIR
+--
+-- Dua policy berikut juga punya klausa "OR auth.role() = 'authenticated'"
+-- seperti kasus transaksi_keuangan_takmir di 012:
+--   1. undangan_select_scope (tabel surat_undangan)
+--   2. undangan_penerima_select_scope (tabel undangan_penerima)
+--
+-- BEDA dengan kasus 012: berdasarkan pengecekan kode (src/pages/),
+-- fitur undangan BELUM diimplementasikan di UI sama sekali — baru
+-- direncanakan (lihat docs/07-struktur-folder.md: daftar-undangan.js,
+-- form-undangan.js, verifikasi-undangan.js belum ada file nyatanya).
+-- Karena itu belum ada bukti dari kode apakah cross-langgar ini bug
+-- atau memang desain yang dituju nanti (mis. supaya semua warga bisa
+-- lihat semua undangan sebagai bentuk transparansi kegiatan langgar
+-- sekitar). Karena fiturnya belum dibangun, TIDAK ADA RISIKO
+-- KEBOCORAN AKTIF saat ini — file ini disiapkan agar tinggal
+-- dijalankan begitu fitur undangan mulai dibangun dan sudah
+-- diputuskan scope-nya.
+--
+-- Konfirmasi ke pengurus takmir sebelum uncomment & menjalankan:
+-- apakah daftar penerima undangan (nama, siapa diundang ke acara
+-- apa) memang boleh terlihat lintas-langgar, atau harus dibatasi?
+-- =========================================================
+
+-- --- Surat undangan: batasi ke langgar sendiri ---
+-- drop policy if exists "undangan_select_scope" on public.surat_undangan;
+-- create policy "undangan_select_scope" on public.surat_undangan for select
+--     using (
+--         public.is_admin()
+--         or langgar_id in (select * from public.current_langgar_ids())
+--     );
+
+-- --- Daftar penerima undangan: batasi ke diri sendiri / pengurus takmir terkait ---
+-- drop policy if exists "undangan_penerima_select_scope" on public.undangan_penerima;
+-- create policy "undangan_penerima_select_scope" on public.undangan_penerima for select
+--     using (
+--         public.is_admin()
+--         or warga_id = public.current_warga_id()
+--         or public.current_role_name() in ('Sekretaris Takmir','Ketua Takmir')
+--     );
+
+-- =========================================================
+-- File ini sengaja tidak mengubah apa pun sampai baris-baris di
+-- atas di-uncomment secara sadar.
+-- =========================================================
