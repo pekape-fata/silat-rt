@@ -1,0 +1,26 @@
+<!-- src/pages/beranda-publik/beranda-publik.html -->
+<div class="container-compact py-3" style="max-width:640px;">
+  <div class="text-center mb-3">
+    <h1 class="fs-4 fw-bold mb-0" style="font-family:var(--font-display);">SILAT RT</h1>
+    <div class="text-caption">Sistem Informasi Langgar dan RT</div>
+  </div>
+
+  <div class="card card-body mb-3" id="bp-langgar-picker" style="display:none;">
+    <label class="form-label">Pilih Langgar</label>
+    <select id="bp_langgar_select" class="form-select"></select>
+  </div>
+
+  <div class="card card-body mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h2 class="section-title mb-0" id="bp-nama-langgar">Jadwal Sholat</h2>
+      <input type="date" id="bp_tanggal" class="form-control form-control-sm" style="width:auto;">
+    </div>
+    <div id="bp-jadwal-body"><div class="skeleton" style="height:160px;"></div></div>
+    <div class="text-caption mt-2">Jadwal dihitung otomatis berdasarkan lokasi langgar — berlaku untuk tanggal berapa pun, tidak terbatas hari ini saja.</div>
+  </div>
+
+  <div class="d-flex gap-2">
+    <a href="#/ajukan-surat" class="btn btn-outline-secondary flex-fill">Ajukan Surat</a>
+    <a href="#/login" class="btn btn-primary flex-fill">Masuk</a>
+  </div>
+</div>

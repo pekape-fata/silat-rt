@@ -1,0 +1,36 @@
+=== PATCH: src/router.js ===
+
+1. Tambahkan rute baru di object `routes` (letakkan di baris paling
+   atas, sebelum '/login'):
+
+  '/beranda-publik': {
+    html: '/src/pages/beranda-publik/beranda-publik.html',
+    js: '/src/pages/beranda-publik/beranda-publik.js',
+    public: true,
+  },
+
+2. Ubah baris default fallback di fungsi `renderRoute()` — dari:
+
+  const path = (location.hash.replace('#', '') || '/login');
+
+Menjadi:
+
+  const path = (location.hash.replace('#', '') || '/beranda-publik');
+
+3. Ubah baris pencarian rute (baris tepat di bawahnya) — dari:
+
+  const route = routes[routePath] || routes['/login'];
+
+Menjadi:
+
+  const route = routes[routePath] || routes['/beranda-publik'];
+
+   (Supaya hash yang tidak dikenali jatuh ke beranda publik, bukan
+   langsung memaksa ke halaman login — pengunjung baru sebaiknya
+   melihat info dulu, bukan diminta login duluan.)
+
+=== TIDAK ADA PERUBAHAN LAIN ===
+Rute '/login' tetap ada dan tetap jadi tujuan untuk pengguna yang
+mengklik tombol "Masuk" di beranda publik, atau saat mencoba membuka
+halaman berlogin tanpa sesi aktif (logika di baris `if (!route.public)`
+tidak berubah).
