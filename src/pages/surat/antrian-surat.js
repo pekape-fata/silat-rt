@@ -45,19 +45,21 @@ async function muatAntrian() {
   if (!data.length) { wrap.innerHTML = `<div class="text-muted small text-center py-4">Tidak ada pengajuan menunggu verifikasi 🎉</div>`; return; }
 
   wrap.innerHTML = data.map(s => `
-    <div class="card p-3" style="border-radius:var(--radius-card); border-color:var(--color-border); cursor:pointer;" data-id="${s.id}">
+    <div class="card p-3" style="border-radius:var(--radius-card); border-color:var(--color-border);" data-id="${s.id}">
       <div class="d-flex justify-content-between">
-        <div>
+        <div style="cursor:pointer;" class="js-buka-verifikasi flex-fill">
           <div class="fw-semibold">${s.nama_pemohon}</div>
           <div class="small text-muted">${s.jenis_surat?.nama_jenis || '-'} · NIK ${maskNIK(s.nik_pemohon)}</div>
         </div>
         <span class="badge" style="background:var(--color-secondary-container); color:#8a5a12; align-self:start;">Baru</span>
       </div>
+      <a href="#/preview-surat?id=${s.id}" class="small mt-2 d-inline-block" style="color:var(--color-primary);">Lihat format surat →</a>
     </div>
   `).join('');
 
-  wrap.querySelectorAll('[data-id]').forEach(card => {
-    card.addEventListener('click', () => bukaVerifikasi(data.find(s => s.id === card.dataset.id)));
+  wrap.querySelectorAll('.js-buka-verifikasi').forEach(el => {
+    const id = el.closest('[data-id]').dataset.id;
+    el.addEventListener('click', () => bukaVerifikasi(data.find(s => s.id === id)));
   });
 }
 
@@ -77,6 +79,7 @@ function bukaTambah() {
   document.getElementById('btn-minta-perbaikan').classList.add('d-none');
   document.getElementById('btn-simpan-verifikasi').classList.add('d-none');
   document.getElementById('btn-simpan-baru').classList.remove('d-none');
+  document.getElementById('btn-lihat-format').classList.add('d-none');
   modal.show();
 }
 
@@ -96,6 +99,10 @@ function bukaVerifikasi(surat) {
   document.getElementById('btn-minta-perbaikan').classList.remove('d-none');
   document.getElementById('btn-simpan-verifikasi').classList.remove('d-none');
   document.getElementById('btn-simpan-baru').classList.add('d-none');
+
+  const btnFormat = document.getElementById('btn-lihat-format');
+  btnFormat.href = `#/preview-surat?id=${surat.id}`;
+  btnFormat.classList.remove('d-none');
   modal.show();
 }
 

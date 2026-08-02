@@ -27,7 +27,7 @@
 
 export const NAV_BY_ROLE = {
   'Ketua RT':          [ 'beranda', 'warga', 'surat', 'keuangan-rt', 'lainnya' ],
-  'Sekretaris RT':     [ 'beranda', 'warga', 'surat', 'agenda', 'lainnya' ],
+  'Sekretaris RT':     [ 'beranda', 'warga', 'surat-sekretaris-rt', 'pengumuman', 'agenda', 'lainnya' ],
   'Bendahara RT':      [ 'beranda', 'keuangan-rt', 'laporan-rt', 'lainnya' ],
   'PKK RT':            [ 'beranda', 'warga', 'agenda', 'pengumuman', 'lainnya' ],
   'Ketua RW':          [ 'beranda', 'surat-rw', 'laporan-rw', 'lainnya' ],
@@ -135,6 +135,7 @@ export const NAV_ITEM_META = {
   'beranda':        { icon: ICON.home, label: 'Beranda', route: '/dashboard' },
   'warga':          { icon: ICON.users, label: 'Warga' },
   'surat':          { icon: ICON.doc, label: 'Surat' },
+  'surat-sekretaris-rt': { icon: ICON.doc, label: 'Surat', route: '/antrian-surat' },
   'keuangan-rt':    { icon: ICON.wallet, label: 'Keuangan', route: '/keuangan-rt' },
   'laporan-rt':     { icon: ICON.chart, label: 'Laporan RT', route: '/keuangan-rt' },
   'laporan-rw':     { icon: ICON.chart, label: 'Laporan RW' },
